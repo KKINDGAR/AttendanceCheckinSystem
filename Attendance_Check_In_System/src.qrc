@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/changeUser.png</file>
+        <file>image/home.png</file>
+        <file>image/loginBackground.png</file>
+        <file>image/logoout.png</file>
+        <file>image/Records.png</file>
+        <file>image/Serial.png</file>
+        <file>image/shuaka1.png</file>
+        <file>image/userModify.png</file>
+        <file>image/manager.png</file>
+        <file>image/Serail1.png</file>
+        <file>image/shuaka2.png</file>
+        <file>image/RechargeDeduction.png</file>
+        <file>image/ICcard.png</file>
+        <file>image/beep.wav</file>
+        <file>image/check_in_success.wav</file>
+        <file>image/check_out_success.wav</file>
+        <file>image/clock_in_fail.wav</file>
+        <file>image/clock_in_success.wav</file>
+        <file>image/deduct_success.wav</file>
+        <file>image/dingdong.wav</file>
+        <file>image/invalid_card.wav</file>
+        <file>image/new_card_detected.wav</file>
+        <file>image/recharge_fail.wav</file>
+        <file>image/recharge_success.wav</file>
+    </qresource>
+</RCC>
