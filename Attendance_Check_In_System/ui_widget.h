@@ -10,6 +10,7 @@
 #define UI_WIDGET_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
@@ -50,6 +51,9 @@ public:
         if (Widget->objectName().isEmpty())
             Widget->setObjectName(QString::fromUtf8("Widget"));
         Widget->resize(800, 650);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/image/WindowIcon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        Widget->setWindowIcon(icon);
         Widget->setStyleSheet(QString::fromUtf8("QWidget {\n"
 "    font-family: \"Microsoft YaHei\", \"\345\276\256\350\275\257\351\233\205\351\273\221\", \"PingFang SC\", sans-serif;\n"
 "    font-size: 14px;\n"
@@ -276,7 +280,7 @@ public:
 
     void retranslateUi(QWidget *Widget)
     {
-        Widget->setWindowTitle(QApplication::translate("Widget", "\350\200\203\345\213\244\346\211\223\345\215\241", nullptr));
+        Widget->setWindowTitle(QApplication::translate("Widget", "\350\207\252\345\212\250\350\200\203\345\213\244\347\263\273\347\273\237", nullptr));
         clockLabel->setText(QApplication::translate("Widget", "--:--:--", nullptr));
         dateLabel->setText(QApplication::translate("Widget", "----\345\271\264--\346\234\210--\346\227\245 \346\230\237\346\234\237-", nullptr));
         cardIconLabel->setText(QString());

@@ -7,8 +7,11 @@
 #include <QString>
 #include <QMediaPlayer>
 #include <QFile>
+#include <QPainter>
+#include <QFontMetrics>
 #include "face/faceengine.h"
 #include "face/facecapture.h"
+#include "face/facedetector.h"
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget),
@@ -91,22 +94,52 @@ Widget::Widget(QWidget *parent) :
 
     //初始化人脸识别引擎
 #ifdef Q_OS_WIN
-    FaceEngine::instance()->init("D:/SeetaFace6_Windows/models");
+    qDebug() << "[人脸] 模型路径: D:/SeetaFace6_Windows/models";
+    bool initOk = FaceEngine::instance()->init("D:/SeetaFace6_Windows/models");
 #else
-    FaceEngine::instance()->init("/home/zwt/opt/SeetaFace6/models");
+    qDebug() << "[人脸] 模型路径: /home/zwt/opt/SeetaFace6/models";
+    bool initOk = FaceEngine::instance()->init("/home/zwt/opt/SeetaFace6/models");
 #endif
+    qDebug() << "[人脸] FaceEngine初始化:" << (initOk ? "成功" : "失败");
+
+    // 创建人脸检测工作线程（所有重活在此线程执行，不阻塞UI）
+    m_faceThread = new QThread(this);
+    m_faceWorker = new FaceDetector();
+    m_faceWorker->moveToThread(m_faceThread);
+    connect(m_faceThread, &QThread::finished, m_faceWorker, &QObject::deleteLater);
+    // 主线程 → 工作线程：发送帧
+    connect(this, &Widget::frameForDetection, m_faceWorker, &FaceDetector::processFrame);
+    // 工作线程 → 主线程：各种结果
+    connect(m_faceWorker, &FaceDetector::matchResult,  this, &Widget::onFaceMatch,     Qt::QueuedConnection);
+    connect(m_faceWorker, &FaceDetector::noMatch,     this, &Widget::onFaceNoMatch,   Qt::QueuedConnection);
+    connect(m_faceWorker, &FaceDetector::noFace,      this, &Widget::onFaceNone,      Qt::QueuedConnection);
+    connect(m_faceWorker, &FaceDetector::noUsers,     this, &Widget::onFaceNoUsers,   Qt::QueuedConnection);
+    m_faceThread->start();
+
+    // 刷脸状态标签
+    m_faceStatusLabel = new QLabel("等待摄像头...", this);
+    m_faceStatusLabel->setAlignment(Qt::AlignCenter);
+    m_faceStatusLabel->setStyleSheet(
+        "QLabel{ border:none; font-size:14px; color:#666; background:transparent; }");
+    ui->mainVerticalLayout->insertWidget(ui->mainVerticalLayout->indexOf(ui->recentRecordsFrame),
+                                         m_faceStatusLabel);
+
+    // 摄像头按需启动：打卡页显示时抓帧，隐藏时停止
     FaceCapture::instance()->setDisplay(ui->lblCamera);
     connect(FaceCapture::instance(), &FaceCapture::frameCaptured,
             this, &Widget::tryFaceCheckIn);
-    FaceCapture::instance()->start();
+    // 摄像头由 showEvent/hideEvent 按需启停
 }
 
 Widget::~Widget()
 {
+    FaceCapture::instance()->stop();
+    m_faceThread->quit();
+    m_faceThread->wait(3000);
     delete ui;
 }
 
-// 串口数据接收:只缓冲数据并重置定时器，解析由 onCardTimeout 统一处理
+// 串口数据接收:只缓冲数据并重置定时器，解析由onCardTimeout统一处理
 void Widget::onSerialReadyRead()
 {
     m_cardBuffer.append(m_sharedSerial->readAll());
@@ -182,36 +215,8 @@ void Widget::onCardTimeout()
 //刷卡处理
 void Widget::onCardScanned(const QString &card)
 {
-    //同一卡号2秒内只处理一次
-    if(card == m_lastCard && m_lastCardTime.msecsTo(QTime::currentTime()) < 2000)
-    {
-        ui->checkInResultLabel->setStyleSheet(
-            "QLabel{ border:none; font-size:16px; color:#ff0000; background:transparent; }");
-        ui->checkInResultLabel->setText("请勿重复打卡");
-        // 请勿重复打卡音效
-        QMediaPlayer *sound = new QMediaPlayer;
-        //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
-        QFile *audioFile = new QFile(":/image/duplicate_clock_in.wav", sound);
-        //打开音频
-        if (audioFile->open(QIODevice::ReadOnly)) {
-            sound->setMedia(QMediaContent(), audioFile);
-            sound->setVolume(80);
-            // 媒体加载完成后自动播放
-            connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-                if (status == QMediaPlayer::LoadedMedia) {
-                    sound->play();
-                }
-            });
-            // 播放结束后释放内存
-            connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-                if (state == QMediaPlayer::StoppedState) {
-                    sound->deleteLater();
-                }
-            });
-        } else {
-            qDebug() << "充值音效: 无法打开音频文件";
-            delete sound;
-        }
+    // 同卡号2秒内不重复处理，防止误刷
+    if(card == m_lastCard && m_lastCardTime.msecsTo(QTime::currentTime()) < 5000) {
         return;
     }
     m_lastCard = card;
@@ -244,30 +249,9 @@ void Widget::onCardScanned(const QString &card)
     }
 
     // 3. 未注册卡号
-    // 未注册卡号音效，通过 QFile 流加载 qrc 资源，QMediaPlayer识别
-    QMediaPlayer *sound = new QMediaPlayer;
-    //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
-    QFile *audioFile = new QFile(":/image/invalid_card.wav", sound);
-    //打开音频
-    if (audioFile->open(QIODevice::ReadOnly)) {
-        sound->setMedia(QMediaContent(), audioFile);
-        sound->setVolume(80);
-        // 媒体加载完成后自动播放
-        connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-            if (status == QMediaPlayer::LoadedMedia) {
-                sound->play();
-            }
-        });
-        // 播放结束后释放内存
-        connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-            if (state == QMediaPlayer::StoppedState) {
-                sound->deleteLater();
-            }
-        });
-    } else {
-        qDebug() << "签到音效: 无法打开音频文件";
-        delete sound;
-    }
+    // 未注册卡号音效
+    playSound(":/image/invalid_card_detected.wav");
+
     ui->checkInResultLabel->setStyleSheet(
         "QLabel{ border:none; font-size:16px; color:#C0392B; background:transparent; }");
     ui->checkInResultLabel->setText(QString("未注册卡号：%1").arg(card));
@@ -288,11 +272,11 @@ void Widget::tryAutoOpenSerial()
         return;
     }
 
-    int     baud     = settings.value("baud", 115200).toInt();
-    int     dataBits = settings.value("dataBits", 8).toInt();
+    int baud = settings.value("baud", 115200).toInt();
+    int dataBits = settings.value("dataBits", 8).toInt();
     QString stopBits = settings.value("stopBits", "1").toString();
-    QString parity   = settings.value("parity", "None").toString();
-    QString flow     = settings.value("flow", "None").toString();
+    QString parity = settings.value("parity", "None").toString();
+    QString flow = settings.value("flow", "None").toString();
 
     // 端口名
     m_sharedSerial->setPortName(port);
@@ -349,104 +333,82 @@ void Widget::updateSerialStatus(bool isOpen)
     }
 }
 
-// ==================== 通用音效播放 ====================
-
+// 通用音效播放（单播放器，新音效自动停旧音效，防止重叠）
 void Widget::playSound(const QString &file)
 {
-    QMediaPlayer *sound = new QMediaPlayer;
-    QFile *audioFile = new QFile(file, sound);
-    if (audioFile->open(QIODevice::ReadOnly)) {
-        sound->setMedia(QMediaContent(), audioFile);
-        sound->setVolume(80);
-        connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus s) {
-            if (s == QMediaPlayer::LoadedMedia) sound->play();
-        });
-        connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State s) {
-            if (s == QMediaPlayer::StoppedState) sound->deleteLater();
+    static QMediaPlayer *s_sound = nullptr;
+    if (!s_sound) {
+        s_sound = new QMediaPlayer(this);
+        s_sound->setVolume(80);
+    }
+    s_sound->stop();
+    s_sound->disconnect();
+    QFile *af = new QFile(file, s_sound);
+    if (af->open(QIODevice::ReadOnly)) {
+        s_sound->setMedia(QMediaContent(), af);
+        connect(s_sound, &QMediaPlayer::mediaStatusChanged, this, [s_sound](QMediaPlayer::MediaStatus st) {
+            if (st == QMediaPlayer::LoadedMedia) s_sound->play();
         });
     } else {
-        delete sound;
+        delete af;
     }
 }
 
-// ==================== 人脸识别打卡（仅Linux） ====================
-
+// 主线程只转发帧到工作线程
 void Widget::tryFaceCheckIn(const QImage &image)
 {
-    if (!this->isVisible()) return;
-    if (image.isNull()) return;
-
-    // 防抖：2秒内同一人脸不重复处理
-    static QTime lastFaceTime;
-    if (lastFaceTime.msecsTo(QTime::currentTime()) < 2000) return;
-
-    std::vector<float> curFeat;
-    QRect faceRect;
-    bool hasFace = FaceEngine::instance()->detectFace(image, curFeat, faceRect);
-
-    if (!hasFace) {
-        // 无检测到人脸 → 灰色边框（证明函数在运行）
-        ui->lblCamera->setStyleSheet(
-            "QLabel{ border: 3px solid #95A5A6; border-radius: 12px; background: black; }");
-        return;
-    }
-
-    // 人脸检测到 → 蓝色边框表示正在识别
-    ui->lblCamera->setStyleSheet(
-        "QLabel{ border: 3px solid #3498DB; border-radius: 12px; background: black; }");
-
-    // 1:N 遍历已录入人脸的员工
-    std::vector<std::tuple<QString, QString, std::vector<float>>> users;
-    MySql::getMySql()->getAllUserFaces(users);
-    if (users.empty()) {
-        ui->lblCamera->setStyleSheet(
-            "QLabel{ border: 3px solid #E67E22; border-radius: 12px; background: black; }");
-        QTimer::singleShot(2000, this, [this]() { restoreCameraBorder(); });
-        return;
-    }
-
-    float bestScore = 0.0f;
-    QString bestCard, bestName;
-    FaceEngine *fe = FaceEngine::instance();
-
-    for (const auto &u : users) {
-        float s = fe->compare(curFeat, std::get<2>(u));
-        if (s > bestScore) {
-            bestScore = s;
-            bestCard  = std::get<0>(u);
-            bestName  = std::get<1>(u);
-        }
-    }
-
-    if (bestScore >= 0.75f) {
-        // 匹配成功 → 绿色边框
-        ui->lblCamera->setStyleSheet(
-            "QLabel{ border: 3px solid #27AE60; border-radius: 12px; background: black; }");
-        lastFaceTime = QTime::currentTime();
-        onCardScanned(bestCard);
-    } else {
-        // 匹配失败 → 红色边框
-        ui->lblCamera->setStyleSheet(
-            "QLabel{ border: 3px solid #E74C3C; border-radius: 12px; background: black; }");
-        lastFaceTime = QTime::currentTime();
-        playSound(":/image/clock_in_fail.wav");
-        ui->checkInResultLabel->setStyleSheet(
-            "QLabel{ border:none; font-size:16px; color:#C0392B; background:transparent; }");
-        ui->checkInResultLabel->setText("未识别到已注册人脸");
-    }
-
-    // 2秒后恢复默认边框
-    QTimer::singleShot(2000, this, [this]() { restoreCameraBorder(); });
+    if (image.isNull() || !this->isVisible()) return;
+    emit frameForDetection(image);
 }
 
-void Widget::restoreCameraBorder()
-{
-    ui->lblCamera->setStyleSheet(
-        "QLabel{ border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255)); border-radius: 12px; background: black; }");
+void Widget::onFaceNone() {
+    m_faceStatusLabel->setText("未检测到人脸");
+}
+void Widget::onFaceNoUsers() {
+    static QTime lastSound;
+    m_faceStatusLabel->setText("陌生人脸");
+    if (!lastSound.isValid() || lastSound.msecsTo(QTime::currentTime()) > 30000) {
+        lastSound = QTime::currentTime();
+        playSound(":/image/stranger_face.wav");
+    }
+}
+void Widget::onFaceMatch(const QString &card, const QString &name, float) {
+    qDebug() << "[人脸] 收到匹配结果:" << name << card;
+    m_faceStatusLabel->setText(QString("识别成功: %1").arg(name));
+    if (!this->isVisible()) return;
+
+    static QTime lastMatch;
+    if (!lastMatch.isValid() || lastMatch.msecsTo(QTime::currentTime()) > 30000) {
+        lastMatch = QTime::currentTime();
+        // 调签到/签退方法，不走 onCardScanned 的卡片去重逻辑
+        MySql *db = MySql::getMySql();
+        QDate today = QDate::currentDate();
+        QString dateStr = today.toString("yyyy-MM-dd");
+        if (db->isCheckedInTodayByCard(card, dateStr))
+            doCheckOut(card, name);
+        else
+            doCheckIn(card, name);
+        refreshRecentRecords();
+        // 同步更新 checkInResultLabel 显示打卡结果
+        QTime now = QTime::currentTime();
+        ui->checkInResultLabel->setStyleSheet(
+            "QLabel{ border:none; font-size:16px; color:#27AE60; background:transparent; }");
+        ui->checkInResultLabel->setText(
+            QString("刷脸打卡: %1  %2").arg(name, now.toString("HH:mm:ss")));
+    }
+}
+
+// 工作线程回调：匹配失败
+void Widget::onFaceNoMatch(float) {
+    static QTime lastFailSound;
+    m_faceStatusLabel->setText("未识别到已注册人脸");
+    if (!lastFailSound.isValid() || lastFailSound.msecsTo(QTime::currentTime()) > 10000) {
+        lastFailSound = QTime::currentTime();
+        playSound(":/image/invalid_card_detected.wav");
+    }
 }
 
 //签到/签退
-
 void Widget::doCheckIn(const QString &card, const QString &name)
 {
     MySql *db = MySql::getMySql();
@@ -486,6 +448,20 @@ void Widget::on_adminEntryButton_clicked()
 {
     this->hide();
     m_loginAdmin->show();
+}
+
+void Widget::showEvent(QShowEvent *ev)
+{
+    QWidget::showEvent(ev);
+    FaceCapture::instance()->start();
+    qDebug() << "[人脸] 摄像头启动（打卡页显示）";
+}
+
+void Widget::hideEvent(QHideEvent *ev)
+{
+    QWidget::hideEvent(ev);
+    FaceCapture::instance()->stop();
+    qDebug() << "[人脸] 摄像头停止（打卡页隐藏）";
 }
 
 

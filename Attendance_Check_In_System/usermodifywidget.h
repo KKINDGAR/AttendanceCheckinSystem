@@ -6,7 +6,7 @@
 #include "mysql.h"
 #include "serialsetwidget.h"
 #include "userregisterwidget.h"
-//用户信息修改类
+
 namespace Ui {
 class UserModifyWidget;
 }
@@ -19,26 +19,26 @@ public:
     explicit UserModifyWidget(QWidget *parent = nullptr);
     ~UserModifyWidget();
     void setSerial(QSerialPort *serial);
+    static void playSound(const QString &file);
 
 private slots:
     void on_confirmModifyButton_clicked();//确认修改按钮槽函数
-
     void on_resetButton_clicked(); //重置linEdit按钮槽函数
-
     void on_deleteEmployeeButton_clicked(); //删除员工按钮槽函数
-
     void on_refrshUserTableButton_clicked();
     void on_captureFaceBtn_clicked();  // 人脸补录
 
 public slots:
-    void onCardReceived(const QString &cardNumber); //接收解析后的纯卡号
+    void onCardReceived(const QString &cardNumber);
 
 private:
     Ui::UserModifyWidget *ui;
-    QSqlTableModel *m_model;
-    QSerialPort *m_serial; // 全局串口指针
+    void showEvent(QShowEvent *ev) override;
+    void hideEvent(QHideEvent *ev) override;
+    QSqlQueryModel *m_model; // 员工表模型
+    QSerialPort *m_serial;
     MySql *db;
-    QByteArray m_cardBuffer; //刷卡数据缓冲区
+    QByteArray m_cardBuffer;
     QString m_cardNumber;
     UserRegisterWidget *newUser;
 };

@@ -1,12 +1,13 @@
 #include "rechargeanddeductionwidget.h"
 #include "ui_rechargeanddeductionwidget.h"
-
+#include <QMediaPlayer>
+#include <QFile>
 RechargeAndDeductionWidget::RechargeAndDeductionWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RechargeAndDeductionWidget)
 {
-    ui->setupUi(this);
-    m_model = new QSqlTableModel(this);
+        ui->setupUi(this);
+        m_model = new QSqlTableModel(this);
 
         m_model->setTable("records");
         m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -82,37 +83,13 @@ void RechargeAndDeductionWidget::on_confirmButton_clicked()
         QMessageBox::warning(this, "提示", "请输入有效金额");
         return;
     }
-
     if (ui->rechargeRadioButton->isChecked()) {
-        // 充值：新增一条交易记录
         double newBalance = balance + amount;
         if (db->updateUserBalance(cardNumber, newBalance)) {
             db->addTransaction(cardNumber, name, "充值", amount, newBalance, ui->remarkEdit->text());
             ui->balanceEdit->setText(QString::number(newBalance, 'f', 2));
-            // 充值成功音效
-            QMediaPlayer *sound = new QMediaPlayer;
-            //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
-            QFile *audioFile = new QFile(":/image/recharge_success.wav", sound);
-            //打开音频
-            if (audioFile->open(QIODevice::ReadOnly)) {
-                sound->setMedia(QMediaContent(), audioFile);
-                sound->setVolume(80);
-                // 媒体加载完成后自动播放
-                connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-                    if (status == QMediaPlayer::LoadedMedia) {
-                        sound->play();
-                    }
-                });
-                // 播放结束后释放内存
-                connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-                    if (state == QMediaPlayer::StoppedState) {
-                        sound->deleteLater();
-                    }
-                });
-            } else {
-                qDebug() << "充值音效: 无法打开音频文件";
-                delete sound;
-            }
+            playSound(":/image/recharge_success.wav");
+
             QMessageBox::information(this, "成功",
                 QString("充值成功！\n卡号：%1\n姓名：%2\n金额：+%3\n余额：%4")
                     .arg(cardNumber, name)
@@ -122,6 +99,7 @@ void RechargeAndDeductionWidget::on_confirmButton_clicked()
     } else if (ui->deductionRadioButton->isChecked()) {
         // 扣款：余额不足则拒绝，否则新增一条交易记录
         if (balance < amount) {
+            playSound(":/image/insufficient_balance.wav");
             QMessageBox::critical(this, "错误", "余额不足，无法扣款");
             return;
         }
@@ -129,30 +107,7 @@ void RechargeAndDeductionWidget::on_confirmButton_clicked()
         if (db->updateUserBalance(cardNumber, newBalance)) {
             db->addTransaction(cardNumber, name, "扣款", amount, newBalance, ui->remarkEdit->text());
             ui->balanceEdit->setText(QString::number(newBalance, 'f', 2));
-            // 扣款成功音效
-            QMediaPlayer *sound = new QMediaPlayer;
-            //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
-            QFile *audioFile = new QFile(":/image/deduct_success.wav", sound);
-            //打开音频
-            if (audioFile->open(QIODevice::ReadOnly)) {
-                sound->setMedia(QMediaContent(), audioFile);
-                sound->setVolume(80);
-                // 媒体加载完成后自动播放
-                connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-                    if (status == QMediaPlayer::LoadedMedia) {
-                        sound->play();
-                    }
-                });
-                // 播放结束后释放内存
-                connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-                    if (state == QMediaPlayer::StoppedState) {
-                        sound->deleteLater();
-                    }
-                });
-            } else {
-                qDebug() << "充值音效: 无法打开音频文件";
-                delete sound;
-            }
+            playSound(":/image/deduct_success.wav");
             QMessageBox::information(this, "成功",
                 QString("扣款成功！\n卡号：%1\n姓名：%2\n金额：-%3\n余额：%4")
                     .arg(cardNumber, name)
@@ -177,4 +132,19 @@ void RechargeAndDeductionWidget::on_resetButton_clicked()
     ui->amountSpinBox->clear();
     ui->remarkEdit->clear();
     m_model->select();
+}
+
+void RechargeAndDeductionWidget::playSound(const QString &file)
+{
+    static QMediaPlayer *sp = nullptr;
+    if (!sp) { sp = new QMediaPlayer; sp->setVolume(80); }
+    sp->stop(); sp->disconnect();
+    QFile *af = new QFile(file, sp);
+    if (af->open(QIODevice::ReadOnly)) {
+        sp->setMedia(QMediaContent(), af);
+        QMediaPlayer *p = sp;
+        QObject::connect(sp, &QMediaPlayer::mediaStatusChanged, [p](QMediaPlayer::MediaStatus st) {
+            if (st == QMediaPlayer::LoadedMedia) p->play();
+        });
+    } else delete af;
 }

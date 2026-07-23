@@ -34,12 +34,32 @@ bool FaceCapture::initCamera()
             this, &FaceCapture::onCapture);
 
     m_camera->setCaptureMode(QCamera::CaptureStillImage);
-    m_camera->start();
+    // 不在此处 start()，由 FaceCapture::start() 按需控制
     return true;
 }
 
-void FaceCapture::start()  { if (m_timer) m_timer->start(300); }   // 300ms 间隔
-void FaceCapture::stop()   { if (m_timer) m_timer->stop(); }
+void FaceCapture::start()
+{
+    m_refCount++;
+    if (m_refCount == 1 && m_cameraOk && m_camera) {
+        m_camera->start();                     // 真正打开摄像头硬件
+        if (m_timer) m_timer->start(120);      // 启动定时抓帧
+        qDebug() << "[摄像头] 硬件打开";
+    }
+}
+
+void FaceCapture::stop()
+{
+    m_refCount--;
+    if (m_refCount <= 0) {
+        m_refCount = 0;
+        if (m_timer) m_timer->stop();          // 停止定时抓帧
+        if (m_cameraOk && m_camera) {
+            m_camera->stop();                  // 真正关闭摄像头硬件
+            qDebug() << "[摄像头] 硬件关闭";
+        }
+    }
+}
 
 void FaceCapture::setDisplay(QLabel *label) { m_label = label; }
 QImage FaceCapture::currentFrame() const    { return m_frame; }
@@ -47,11 +67,13 @@ QImage FaceCapture::currentFrame() const    { return m_frame; }
 void FaceCapture::onCapture(int id, const QImage &img)
 {
     Q_UNUSED(id);
-    m_frame = img;
-    if (m_label && !img.isNull())
-        m_label->setPixmap(QPixmap::fromImage(img)
-            .scaled(m_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    emit frameCaptured(img);
+    // 缩小到 640 宽存为帧（平衡流畅度和检测精度）
+    m_frame = img.scaledToWidth(640, Qt::FastTransformation);
+
+    if (m_label && !m_frame.isNull())
+        m_label->setPixmap(QPixmap::fromImage(m_frame));
+
+    emit frameCaptured(m_frame);
 }
 
 void FaceCapture::onTick()

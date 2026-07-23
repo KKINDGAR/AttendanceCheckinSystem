@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>考勤打卡</string>
+   <string>自动考勤系统</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="src.qrc">
+    <normaloff>:/image/WindowIcon.png</normaloff>:/image/WindowIcon.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {

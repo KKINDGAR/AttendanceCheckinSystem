@@ -161,12 +161,14 @@ void SystemManagementPanel::updateSerialStatus()
 {
     if(m_serial && m_serial->isOpen())
     {
-        ui->serailTextLabel->setStyleSheet("Qlabel{background-color:#27AE60;}");
+        ui->serailTextLabel->setStyleSheet("QLabel{background:transparent;}");
+        ui->serilIconlabel->setPixmap(QPixmap(":/image/serailConnect.png"));
         ui->serailTextLabel->setText(QString("串口%1已连接").arg(m_serial->portName()));
     }
     else
     {
-        ui->serailTextLabel->setStyleSheet("Qlabel{background-color:#C0392B;}");
+        ui->serilIconlabel->setPixmap(QPixmap(":/image/Serail.png"));
+        ui->serailTextLabel->setStyleSheet("QLabel{background:transparent;}");
         ui->serailTextLabel->setText("串口已断开");
     }
 }

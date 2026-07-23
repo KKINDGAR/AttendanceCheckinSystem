@@ -3,6 +3,8 @@
 #include <QDate>
 #include <QTime>
 #include <QMessageBox>
+#include <QMediaPlayer>
+#include <QFile>
 #include "face/faceengine.h"
 #include "face/facecapture.h"
 UserRegisterWidget::UserRegisterWidget(QWidget *parent) :
@@ -12,12 +14,12 @@ UserRegisterWidget::UserRegisterWidget(QWidget *parent) :
     ui->setupUi(this);
     db = MySql::getMySql();
     m_cardTimer = new QTimer(this);
-    m_model = new QSqlTableModel(this);
+    m_model = new QSqlQueryModel(this);
     //绑定数据库user表
-    m_model->setTable("user");
-    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_model->select();
-
+//    m_model->setTable("user");
+//    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    m_model->select();
+    m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
     ui->userInfoTableView->setModel(m_model);
 
     // 表头中文
@@ -75,58 +77,46 @@ void UserRegisterWidget::on_saveButton_clicked()
 {
         QTime now = QTime::currentTime();
         QDate toDay = QDate::currentDate();
-        QString name;
-        int age;
-        QString sex;
-        QString registerTime;
-        QString cardId;
-        cardId = ui->cardNumLineEdit->text().trimmed();
-        name = ui->nameEdit->text().trimmed();
-        age = ui->ageSpinBox->value();
-        sex = ui->sexComboBox->currentText();
-        registerTime = toDay.toString("yyyy-MM-dd").append(" ").append(now.toString("HH:mm:ss"));
-        //判断是否有空
+        QString cardId = ui->cardNumLineEdit->text().trimmed();
+        QString name = ui->nameEdit->text().trimmed();
+        int age = ui->ageSpinBox->value();
+        QString sex = ui->sexComboBox->currentText();
+        QString registerTime = toDay.toString("yyyy-MM-dd").append(" ").append(now.toString("HH:mm:ss"));
+
         if(cardId.isEmpty()||name.isEmpty())
         {
-            QMessageBox::critical(this,"注册失败","卡号或姓名为空");
+            playSound(":/image/register_fail_empty_fields.wav");
             return;
         }
-        //卡号去重
         if(db->userExists(cardId))
         {
-            QMessageBox::critical(this,"注册失败","检测到重复卡号");
+            playSound(":/image/register_fail_duplicate_card.wav");
             return;
         }
         if(db->insertUser(cardId,name,age,sex,registerTime))
         {
-            // 尝试录入人脸（失败不影响注册）
             QImage frame = FaceCapture::instance()->currentFrame();
             std::vector<float> feat;
             if(!frame.isNull() && FaceEngine::instance()->detectFace(frame, feat))
             {
                 db->updateUserFace(cardId, feat);
-                QMessageBox::information(this,"成功","注册成功，人脸已录入");
+                playSound(":/image/register_success_face_ok.wav");
             }
             else
             {
-                QMessageBox::information(this,"成功","注册成功（未检测到人脸，可后续补录）");
+                playSound(":/image/register_success_face_missing.wav");
             }
-            //刷新表格
-            m_model->select();
-            // 清空所有的输入框
+            m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
             ui->cardNumLineEdit->clear();
             ui->nameEdit->clear();
             ui->ageSpinBox->setValue(0);
             ui->sexComboBox->setCurrentIndex(0);
-            //更新注册人数
             ui->label->setText(QString("当前注册人数：%1").arg(m_model->rowCount()));
         }
         else {
-            QMessageBox::critical(this,"失败","注册失败,请重试");
+            playSound(":/image/register_fail.wav");
         }
 }
-
-
 
 void UserRegisterWidget::on_refreshCardNummButton_clicked()
 {
@@ -141,6 +131,9 @@ void UserRegisterWidget::on_clearCardNumButton_clicked()
     m_cardBuffer.clear();
 }
 
+void UserRegisterWidget::showEvent(QShowEvent *ev) { QWidget::showEvent(ev); FaceCapture::instance()->start(); }
+void UserRegisterWidget::hideEvent(QHideEvent *ev) { QWidget::hideEvent(ev); FaceCapture::instance()->stop(); }
+
 void UserRegisterWidget::onCardReceived(const QString &cardNumber)
 {
     if(!this->isVisible())
@@ -148,11 +141,26 @@ void UserRegisterWidget::onCardReceived(const QString &cardNumber)
         return;
     }
     ui->cardNumLineEdit->setText(cardNumber);
+    m_cardTimer->start(300);
 }
 
 void UserRegisterWidget::on_refrshRegistTableButton_clicked()
 {
-    m_model->select();
-    //更新注册人数
+    m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
     ui->label->setText(QString("当前注册人数：%1").arg(m_model->rowCount()));
+}
+
+void UserRegisterWidget::playSound(const QString &file)
+{
+    static QMediaPlayer *sp = nullptr;
+    if (!sp) { sp = new QMediaPlayer; sp->setVolume(80); }
+    sp->stop(); sp->disconnect();
+    QFile *af = new QFile(file, sp);
+    if (af->open(QIODevice::ReadOnly)) {
+        sp->setMedia(QMediaContent(), af);
+        QMediaPlayer *p = sp;
+        QObject::connect(sp, &QMediaPlayer::mediaStatusChanged, [p](QMediaPlayer::MediaStatus st) {
+            if (st == QMediaPlayer::LoadedMedia) p->play();
+        });
+    } else delete af;
 }

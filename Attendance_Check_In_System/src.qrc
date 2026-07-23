@@ -13,17 +13,28 @@
         <file>image/shuaka2.png</file>
         <file>image/RechargeDeduction.png</file>
         <file>image/ICcard.png</file>
-        <file>image/beep.wav</file>
         <file>image/check_in_success.wav</file>
         <file>image/check_out_success.wav</file>
         <file>image/clock_in_fail.wav</file>
-        <file>image/clock_in_success.wav</file>
         <file>image/deduct_success.wav</file>
-        <file>image/dingdong.wav</file>
-        <file>image/invalid_card.wav</file>
-        <file>image/new_card_detected.wav</file>
         <file>image/recharge_fail.wav</file>
         <file>image/recharge_success.wav</file>
         <file>image/duplicate_clock_in.wav</file>
+        <file>image/invalid_card_detected.wav</file>
+        <file>image/stranger_face.wav</file>
+        <file>image/new_card_detected.wav</file>
+        <file>image/insufficient_balance.wav</file>
+        <file>image/face_supplement_success.wav</file>
+        <file>image/modify_fail.wav</file>
+        <file>image/modify_fail_empty_form.wav</file>
+        <file>image/modify_success.wav</file>
+        <file>image/register_fail.wav</file>
+        <file>image/register_success.wav</file>
+        <file>image/register_success_face_missing.wav</file>
+        <file>image/register_success_face_ok.wav</file>
+        <file>image/register_fail_duplicate_card.wav</file>
+        <file>image/register_fail_empty_fields.wav</file>
+        <file>image/serailConnect.png</file>
+        <file>image/WindowIcon.png</file>
     </qresource>
 </RCC>

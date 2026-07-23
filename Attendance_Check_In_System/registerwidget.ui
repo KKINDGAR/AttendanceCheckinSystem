@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>管理员注册</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="src.qrc">
+    <normaloff>:/image/manager.png</normaloff>:/image/manager.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#RegisterWidget{

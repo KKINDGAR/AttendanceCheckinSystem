@@ -6,7 +6,7 @@ AttendanceRecordsWidget::AttendanceRecordsWidget(QWidget *parent) :
     ui(new Ui::AttendanceRecordsWidget)
 {
     ui->setupUi(this);
-    m_model = new QSqlTableModel(this);
+    m_model = new QSqlQueryModel(this);
 
 //        m_model->setTable("user");
 //        m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);

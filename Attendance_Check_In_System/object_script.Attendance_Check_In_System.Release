@@ -10,6 +10,9 @@ release/attendancerecordswidget.o
 release/serialsetwidget.o
 release/rechargeanddeductionwidget.o
 release/loginadminwidget.o
+release/faceengine.o
+release/facecapture.o
+release/facedetector.o
 release/qrc_src.o
 release/moc_widget.o
 release/moc_registerwidget.o
@@ -22,3 +25,6 @@ release/moc_attendancerecordswidget.o
 release/moc_serialsetwidget.o
 release/moc_rechargeanddeductionwidget.o
 release/moc_loginadminwidget.o
+release/moc_faceengine.o
+release/moc_facecapture.o
+release/moc_facedetector.o

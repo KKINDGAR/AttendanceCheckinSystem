@@ -6,6 +6,7 @@
 #include <QSerialPort>
 #include <QSqlQueryModel>
 #include <QSettings>
+#include <QThread>
 #include "mysql.h"
 #include "registerwidget.h"
 #include "systemmanagementpanel.h"
@@ -24,7 +25,7 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
-
+    void playSound(const QString &file);  // 播放音效
 private slots:
     void onClockTick();                         // 时钟刷新
     void onCardScanned(const QString &card);    // 刷卡处理
@@ -40,17 +41,22 @@ signals:
     void cardParseRecharge(const QString &cardNumber);      //解析后的纯净卡号：发给充值扣款页
     void cardParseRegistPage(const QString &cardNumber);    //解析后的纯净卡号：发给管理员注册页
     void cardParseLoginPage(const QString &cardNumber);     //解析后的纯净卡号：发给管理员登录页面
-    void cardParseSystemPage(const QString &cardNumber);    //解析后的纯净卡号：发给管理员面板页面
+    void cardParseSystemPage(const QString &cardNumber);
+    void frameForDetection(const QImage &image);            // 发给检测线程
 private:
     void setupRecentRecords();              // 初始化最近打卡表格
     void refreshRecentRecords();            // 刷新最近打卡数据
     void tryAutoOpenSerial();               // 启动时读取QSettings自动打开串口
     void updateSerialStatus(bool isOpen);   // 更新打卡区串口状态提示
-    void playSound(const QString &file);  // 播放音效
     void doCheckIn(const QString &card, const QString &name);  // 签到方法
     void doCheckOut(const QString &card, const QString &name); // 签退方法
-    void tryFaceCheckIn(const QImage &image); // 人脸识别打卡
-    void restoreCameraBorder();              // 恢复摄像头边框
+    void tryFaceCheckIn(const QImage &image); // 人脸识别打卡(仅转发给worker)
+    void onFaceMatch(const QString &card, const QString &name, float score);
+    void onFaceNoMatch(float score);
+    void onFaceNone();
+    void onFaceNoUsers();
+    void showEvent(QShowEvent *ev) override; // 显示时启动摄像头
+    void hideEvent(QHideEvent *ev) override; // 隐藏时停止摄像头
 
     Ui::Widget *ui;
     QTimer *m_clockTimer;            // 时钟定时器
@@ -60,11 +66,16 @@ private:
     RegisterWidget *m_regis;        //注册页指针，跳转注册页
     SystemManagementPanel *m_smp;   //登录页指针，跳转登录页
     LoginAdminWidget *m_loginAdmin; //控制面板页指针，分发串口
+    // 人脸框+姓名直接画在 lblCamera 上，不再用 FaceDialog
 
     QByteArray m_cardBuffer;     // 卡号数据缓冲区
     QTimer *m_cardTimeout;       // 刷卡超时定时器
     QString m_lastCard;          // 上次刷卡卡号(去重用)
     QTime m_lastCardTime;        // 上次刷卡时间(去重用)
+
+    QThread *m_faceThread;       // 人脸检测工作线程
+    class FaceDetector *m_faceWorker; // 工作线程中的检测器
+    QLabel *m_faceStatusLabel;   // 刷脸状态文字（独立于刷卡）
 };
 
 #endif // WIDGET_H

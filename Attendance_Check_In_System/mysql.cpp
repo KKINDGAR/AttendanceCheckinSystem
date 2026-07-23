@@ -17,6 +17,9 @@ MySql::MySql(QString dbName, QObject *parent) : QObject (parent)
     //判断打开数据库
     if(db.open())
     {
+        // 启用WAL模式：允许多线程并发读写，避免database is locked
+        QSqlQuery q(db);
+        q.exec("PRAGMA journal_mode=WAL");
         qDebug()<<"OK"<<endl;
     }
     else
@@ -372,31 +375,41 @@ bool MySql::updateUserBalance(QString card, double newBalance)
 bool MySql::checkIn(QString card, QString name, QString date, QString time)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO card(card,name,date,checkInTime,status) VALUES(:card,:name,:date,:time,'正常')");
+    // 状态判断：<09:00 正常，≥09:00 迟到
+    QString status = (time < "09:00") ? "正常" : "迟到";
+    query.prepare("INSERT INTO card(card,name,date,checkInTime,status) VALUES(:card,:name,:date,:time,:st)");
     query.bindValue(":card",card);
     query.bindValue(":name",name);
     query.bindValue(":date",date);
     query.bindValue(":time",time);
+    query.bindValue(":st",status);
     if(query.exec())
     {
-        qDebug()<<"签到成功"<<endl;
+        qDebug()<<"签到成功("<<status<<")"<<endl;
         return true;
     }
     qDebug()<<"签到失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
-// 签退
+// 签退（含早退判断）
 bool MySql::checkOut(QString card, QString date, QString time)
 {
     QSqlQuery query;
-    query.prepare("UPDATE card SET checkOutTime=:time WHERE card=:card AND date=:date AND checkOutTime=''");
+    // 签退时更新状态：<18:00 早退，≥18:00 保持签到状态
+    QString st = (time < "18:00") ? "早退" : "";
+    if (st.isEmpty()) {
+        query.prepare("UPDATE card SET checkOutTime=:time WHERE card=:card AND date=:date AND checkOutTime=''");
+    } else {
+        query.prepare("UPDATE card SET checkOutTime=:time, status=:st WHERE card=:card AND date=:date AND checkOutTime=''");
+        query.bindValue(":st",st);
+    }
     query.bindValue(":time",time);
     query.bindValue(":card",card);
     query.bindValue(":date",date);
     if(query.exec() && query.numRowsAffected() > 0)
     {
-        qDebug()<<"签退成功"<<endl;
+        qDebug()<<"签退成功("<<st<<")"<<endl;
         return true;
     }
     qDebug()<<"签退失败(无签到记录或已签退):"<<endl;

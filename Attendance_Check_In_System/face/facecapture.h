@@ -34,6 +34,7 @@ private:
 
     static FaceCapture *s_inst;
     bool                 m_cameraOk = false;
+    int                  m_refCount = 0;  // 引用计数
     QCamera             *m_camera = nullptr;
     QCameraImageCapture *m_capture = nullptr;
     QTimer              *m_timer  = nullptr;

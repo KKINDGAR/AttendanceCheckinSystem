@@ -2,6 +2,8 @@
 #include "ui_usermodifywidget.h"
 #include "face/faceengine.h"
 #include "face/facecapture.h"
+#include <QMediaPlayer>
+#include <QFile>
 
 UserModifyWidget::UserModifyWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,13 +11,13 @@ UserModifyWidget::UserModifyWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     db = MySql::getMySql();//获取数据库
-    m_model = new QSqlTableModel(this);
+    m_model = new QSqlQueryModel(this);
 
     //绑定员工表，实时查看修改信息
-    m_model->setTable("user");
-    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_model->select();
-
+//    m_model->setTable("user");
+//    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    m_model->select();
+    m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
     ui->userInfoTableView->setModel(m_model);
 
     // 表头中文
@@ -31,6 +33,7 @@ UserModifyWidget::UserModifyWidget(QWidget *parent) :
     ui->userInfoTableView->setAlternatingRowColors(true);
     ui->userInfoTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->userInfoTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
 }
 
 UserModifyWidget::~UserModifyWidget()
@@ -46,23 +49,17 @@ void UserModifyWidget::setSerial(QSerialPort *serial)
 void UserModifyWidget::on_confirmModifyButton_clicked()
 {
     MySql *db = MySql::getMySql();
-    QString name;
-    int age;
-    QString sex;
-    name = ui->nameEdit->text();
-    age = ui->ageSpinBox->value();
-    sex = ui->sexComboBox->currentText();
-    QMessageBox::information(this,"提示","确认修改员工信息");
+    QString name = ui->nameEdit->text();
+    int age = ui->ageSpinBox->value();
+    QString sex = ui->sexComboBox->currentText();
     if(m_cardNumber.isEmpty()||name.isEmpty())
     {
-        QMessageBox::critical(this,"错误","存在空表单");
-    }
-    else
-    {
-        QMessageBox::information(this,"提示","修改成功");
+        playSound(":/image/modify_fail_empty_form.wav");
+        return;
     }
     db->updateUser(m_cardNumber,name,age,sex);
-    m_model->select();
+    m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
+    playSound(":/image/modify_success.wav");
 }
 
 void UserModifyWidget::on_resetButton_clicked()
@@ -81,12 +78,24 @@ void UserModifyWidget::on_deleteEmployeeButton_clicked()
     if(cardNumber.isEmpty())
     {
         QMessageBox::critical(this,"错误","卡号为空，无法操作");
+        return;
     }
-    else {
-            QMessageBox::information(this,"提示","确认删除该员工?");
-            db->deleteUser(m_cardNumber);
+    QMessageBox::StandardButton btn = QMessageBox::question(
+        this, "确认删除", "确定删除该员工吗？\n此操作不可恢复！",
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (btn == QMessageBox::Yes) {
+        db->deleteUser(m_cardNumber);
+        m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
     }
-
+}
+//关闭打开摄像头
+void UserModifyWidget::showEvent(QShowEvent *ev)
+{
+    QWidget::showEvent(ev); FaceCapture::instance()->start();
+}
+void UserModifyWidget::hideEvent(QHideEvent *ev)
+{
+    QWidget::hideEvent(ev); FaceCapture::instance()->stop();
 }
 
 void UserModifyWidget::onCardReceived(const QString &cardNumber)
@@ -106,7 +115,7 @@ void UserModifyWidget::onCardReceived(const QString &cardNumber)
     {
         ui->nameEdit->setText(name);
         ui->ageSpinBox->setValue(age);
-        ui->sexComboBox->setCurrentText(sex);
+//        ui->sexComboBox->setCurrentText(sex);
         ui->registerTimeEdit->setText(registerTime);
     }
 }
@@ -131,7 +140,7 @@ void UserModifyWidget::on_captureFaceBtn_clicked()
     }
 
     if (db->updateUserFace(m_cardNumber, feat)) {
-        QMessageBox::information(this, "成功", "人脸补录成功");
+        playSound(":/image/face_supplement_success.wav");
     } else {
         QMessageBox::critical(this, "失败", "人脸数据保存失败");
     }
@@ -139,5 +148,20 @@ void UserModifyWidget::on_captureFaceBtn_clicked()
 
 void UserModifyWidget::on_refrshUserTableButton_clicked()
 {
-    m_model->select();
+    m_model->setQuery("SELECT card,name,age,sex,registerTime,balance FROM user");
+}
+
+void UserModifyWidget::playSound(const QString &file)
+{
+    static QMediaPlayer *sp = nullptr;
+    if (!sp) { sp = new QMediaPlayer; sp->setVolume(80); }
+    sp->stop(); sp->disconnect();
+    QFile *af = new QFile(file, sp);
+    if (af->open(QIODevice::ReadOnly)) {
+        sp->setMedia(QMediaContent(), af);
+        QMediaPlayer *p = sp;
+        QObject::connect(sp, &QMediaPlayer::mediaStatusChanged, [p](QMediaPlayer::MediaStatus st) {
+            if (st == QMediaPlayer::LoadedMedia) p->play();
+        });
+    } else delete af;
 }

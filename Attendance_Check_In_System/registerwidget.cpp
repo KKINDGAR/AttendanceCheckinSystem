@@ -21,6 +21,10 @@ RegisterWidget::~RegisterWidget()
 
 void RegisterWidget::on_backLoginButton_clicked()
 {
+    ui->userRegisterEdit->clear();
+    ui->passwordRegisterEdit->clear();
+    ui->passwordComfirEdit->clear();
+    cardNumber.clear();
     emit closeRegister();
 }
 
@@ -58,7 +62,10 @@ void RegisterWidget::on_submitButton_clicked()
         db->insertData(cardNumber, name, password);
     }
     QMessageBox::information(this,"成功","注册成功，即将跳转登陆界面");
-
+    ui->userRegisterEdit->clear();
+    ui->passwordRegisterEdit->clear();
+    ui->passwordComfirEdit->clear();
+    cardNumber.clear();
     emit closeRegister();
 }
 

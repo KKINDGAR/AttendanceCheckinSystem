@@ -41,7 +41,7 @@ private slots:
 private:
     Ui::SerialSetWidget *ui;
     static SerialSetWidget *serial;
-    QSerialPort *serialPort;
+    QSerialPort *serialPort = nullptr;
 };
 
 #endif // SERIALSETWIDGET_H

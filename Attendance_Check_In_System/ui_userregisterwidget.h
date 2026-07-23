@@ -402,7 +402,7 @@ public:
 "{\n"
 "	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));\n"
 "	color: rgb(74, 85, 104);\n"
-"	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));\n"
 "	border-radius: 6px;\n"
 "	font-size: 14px;\n"
 "	font: 63 9pt \"Bahnschrift SemiBold SemiConden\";\n"
@@ -543,7 +543,7 @@ public:
         nameLabel->setText(QApplication::translate("UserRegisterWidget", "\345\247\223\345\220\215", nullptr));
         ageLabel->setText(QApplication::translate("UserRegisterWidget", "\345\271\264\351\276\204", nullptr));
         sexLabel->setText(QApplication::translate("UserRegisterWidget", "\346\200\247\345\210\253", nullptr));
-        saveButton->setText(QApplication::translate("UserRegisterWidget", "\344\277\235\345\255\230", nullptr));
+        saveButton->setText(QApplication::translate("UserRegisterWidget", "\346\263\250\345\206\214", nullptr));
         resetButton->setText(QApplication::translate("UserRegisterWidget", "\351\207\215\347\275\256", nullptr));
         refrshRegistTableButton->setText(QApplication::translate("UserRegisterWidget", "\345\210\267\346\226\260\346\263\250\345\206\214\350\241\250", nullptr));
     } // retranslateUi

@@ -18,6 +18,7 @@ public:
     ~RechargeAndDeductionWidget();
 
     void setSerial(QSerialPort *serial);
+    static void playSound(const QString &file);
 
 public slots:
     void onCardReceived(const QString &cardNumber);  // 接收解析后的卡号

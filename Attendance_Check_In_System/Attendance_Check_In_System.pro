@@ -52,8 +52,8 @@ HEADERS += \
     loginadminwidget.h
 
 # 人脸识别模块
-SOURCES += face/faceengine.cpp face/facecapture.cpp
-HEADERS += face/faceengine.h   face/facecapture.h
+SOURCES += face/faceengine.cpp face/facecapture.cpp face/facedetector.cpp
+HEADERS += face/faceengine.h   face/facecapture.h   face/facedetector.h
 
 FORMS += \
         widget.ui \
