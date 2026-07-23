@@ -61,8 +61,10 @@ void LoginAdminWidget::on_loginButton_clicked()
     {
         QMessageBox::information(this,"成功","登录成功！");
         this->hide();
-        if(m_smp)
+        if(m_smp) {
+            m_smp->setAdminCard(m_cardNumber.isEmpty() ? account : m_cardNumber);
             m_smp->show();
+        }
     }
     else {
         QMessageBox::critical(this,"登录失败","账号或密码有误，请重新输入");
@@ -83,7 +85,10 @@ void LoginAdminWidget::onCardReceived(const QString &cardNumber)
     {
         QMessageBox::information(this, "成功", "登录成功！");
         this->hide();
-        if(m_smp) m_smp->show();
+        if(m_smp) {
+            m_smp->setAdminCard(m_cardNumber);
+            m_smp->show();
+        }
     }
     else
     {

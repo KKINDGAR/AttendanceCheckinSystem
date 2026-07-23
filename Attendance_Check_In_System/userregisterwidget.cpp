@@ -135,5 +135,11 @@ void UserRegisterWidget::onCardReceived(const QString &cardNumber)
         return;
     }
     ui->cardNumLineEdit->setText(cardNumber);
-    m_cardTimer->start(300);//每次有新的数据就更新计时器
+}
+
+void UserRegisterWidget::on_refrshRegistTableButton_clicked()
+{
+    m_model->select();
+    //更新注册人数
+    ui->label->setText(QString("当前注册人数：%1").arg(m_model->rowCount()));
 }

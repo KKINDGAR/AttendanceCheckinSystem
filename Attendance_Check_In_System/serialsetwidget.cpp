@@ -115,7 +115,14 @@ void SerialSetWidget::on_sendButton_clicked()
 
 void SerialSetWidget::on_refreshPortButton_clicked()
 {
-    serialPort->clear();
+    // 重新扫描系统可用串口列表
+    ui->portNameComboBox->clear();
+    QStringList portList;
+    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        portList << info.portName();
+    }
+    ui->portNameComboBox->addItems(portList);
 }
 
 void SerialSetWidget::on_clearReceiveButton_clicked()

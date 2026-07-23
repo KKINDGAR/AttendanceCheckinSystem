@@ -28,6 +28,8 @@ private slots:
     void on_refreshCardNummButton_clicked();//刷新卡号
 
     void on_clearCardNumButton_clicked();//清空卡号
+    void on_refrshRegistTableButton_clicked();
+
 signals:
 
 public slots:

@@ -174,7 +174,7 @@ public:
 "QLineEdit::placeholder{\n"
 "    color: #888888;\n"
 "}"));
-        cardNumEdit->setReadOnly(true);
+        cardNumEdit->setReadOnly(false);
 
         formGridLayout->addWidget(cardNumEdit, 0, 1, 1, 1);
 
@@ -524,7 +524,7 @@ public:
         cardTitleLabel->setText(QApplication::translate("RechargeAndDeductionWidget", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">\345\205\205\345\200\274 / \346\211\243\346\254\276</span></p></body></html>", nullptr));
         cardLogoLabel->setText(QString());
         cardPromptLabel->setText(QApplication::translate("RechargeAndDeductionWidget", "<html><head/><body><p align=\"center\">\345\210\267\345\215\241\350\257\273\345\217\226\345\221\230\345\267\245\344\277\241\346\201\257</p></body></html>", nullptr));
-        cardNumEdit->setPlaceholderText(QApplication::translate("RechargeAndDeductionWidget", "\345\210\267\345\215\241\350\207\252\345\212\250\350\257\273\345\217\226\345\215\241\345\217\267", nullptr));
+        cardNumEdit->setPlaceholderText(QApplication::translate("RechargeAndDeductionWidget", "\350\257\267\350\276\223\345\205\245\346\210\226\345\210\267\345\215\241\345\275\225\345\205\245\345\215\241\345\217\267", nullptr));
         nameLabel->setText(QApplication::translate("RechargeAndDeductionWidget", "\345\247\223\345\220\215", nullptr));
         amountLabel->setText(QApplication::translate("RechargeAndDeductionWidget", "\351\207\221\351\242\235", nullptr));
         balanceLabel->setText(QApplication::translate("RechargeAndDeductionWidget", "\345\275\223\345\211\215\344\275\231\351\242\235", nullptr));

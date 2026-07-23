@@ -24,5 +24,6 @@
         <file>image/new_card_detected.wav</file>
         <file>image/recharge_fail.wav</file>
         <file>image/recharge_success.wav</file>
+        <file>image/duplicate_clock_in.wav</file>
     </qresource>
 </RCC>

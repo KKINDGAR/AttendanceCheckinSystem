@@ -89,6 +89,30 @@ void RechargeAndDeductionWidget::on_confirmButton_clicked()
         if (db->updateUserBalance(cardNumber, newBalance)) {
             db->addTransaction(cardNumber, name, "充值", amount, newBalance, ui->remarkEdit->text());
             ui->balanceEdit->setText(QString::number(newBalance, 'f', 2));
+            // 充值成功音效
+            QMediaPlayer *sound = new QMediaPlayer;
+            //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
+            QFile *audioFile = new QFile(":/image/recharge_success.wav", sound);
+            //打开音频
+            if (audioFile->open(QIODevice::ReadOnly)) {
+                sound->setMedia(QMediaContent(), audioFile);
+                sound->setVolume(80);
+                // 媒体加载完成后自动播放
+                connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
+                    if (status == QMediaPlayer::LoadedMedia) {
+                        sound->play();
+                    }
+                });
+                // 播放结束后释放内存
+                connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
+                    if (state == QMediaPlayer::StoppedState) {
+                        sound->deleteLater();
+                    }
+                });
+            } else {
+                qDebug() << "充值音效: 无法打开音频文件";
+                delete sound;
+            }
             QMessageBox::information(this, "成功",
                 QString("充值成功！\n卡号：%1\n姓名：%2\n金额：+%3\n余额：%4")
                     .arg(cardNumber, name)
@@ -105,6 +129,30 @@ void RechargeAndDeductionWidget::on_confirmButton_clicked()
         if (db->updateUserBalance(cardNumber, newBalance)) {
             db->addTransaction(cardNumber, name, "扣款", amount, newBalance, ui->remarkEdit->text());
             ui->balanceEdit->setText(QString::number(newBalance, 'f', 2));
+            // 扣款成功音效
+            QMediaPlayer *sound = new QMediaPlayer;
+            //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
+            QFile *audioFile = new QFile(":/image/deduct_success.wav", sound);
+            //打开音频
+            if (audioFile->open(QIODevice::ReadOnly)) {
+                sound->setMedia(QMediaContent(), audioFile);
+                sound->setVolume(80);
+                // 媒体加载完成后自动播放
+                connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
+                    if (status == QMediaPlayer::LoadedMedia) {
+                        sound->play();
+                    }
+                });
+                // 播放结束后释放内存
+                connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
+                    if (state == QMediaPlayer::StoppedState) {
+                        sound->deleteLater();
+                    }
+                });
+            } else {
+                qDebug() << "充值音效: 无法打开音频文件";
+                delete sound;
+            }
             QMessageBox::information(this, "成功",
                 QString("扣款成功！\n卡号：%1\n姓名：%2\n金额：-%3\n余额：%4")
                     .arg(cardNumber, name)

@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 class Ui_UserRegisterWidget
 {
 public:
-    QVBoxLayout *mainVerticalLayout;
+    QGridLayout *gridLayout;
     QHBoxLayout *headerLayout;
     QSpacerItem *headerLeftSpacer;
     QLabel *label;
@@ -59,6 +59,8 @@ public:
     QPushButton *saveButton;
     QSpacerItem *horizontalSpacer_2;
     QPushButton *resetButton;
+    QSpacerItem *horizontalSpacer_4;
+    QPushButton *refrshRegistTableButton;
     QSpacerItem *buttonHorizontalSpacer;
     QTableView *userInfoTableView;
 
@@ -76,10 +78,8 @@ public:
 "QWidget#UserRegisterWidget{\n"
 "    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
 "}"));
-        mainVerticalLayout = new QVBoxLayout(UserRegisterWidget);
-        mainVerticalLayout->setSpacing(15);
-        mainVerticalLayout->setObjectName(QString::fromUtf8("mainVerticalLayout"));
-        mainVerticalLayout->setContentsMargins(10, 10, 10, 10);
+        gridLayout = new QGridLayout(UserRegisterWidget);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         headerLayout = new QHBoxLayout();
         headerLayout->setObjectName(QString::fromUtf8("headerLayout"));
         headerLeftSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -100,7 +100,7 @@ public:
         headerLayout->addWidget(label);
 
 
-        mainVerticalLayout->addLayout(headerLayout);
+        gridLayout->addLayout(headerLayout, 0, 0, 1, 1);
 
         topHorizontalLayout = new QHBoxLayout();
         topHorizontalLayout->setSpacing(20);
@@ -450,6 +450,36 @@ public:
 
         buttonHorizontalLayout->addWidget(resetButton);
 
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        buttonHorizontalLayout->addItem(horizontalSpacer_4);
+
+        refrshRegistTableButton = new QPushButton(editFormFrame);
+        refrshRegistTableButton->setObjectName(QString::fromUtf8("refrshRegistTableButton"));
+        refrshRegistTableButton->setMinimumSize(QSize(120, 44));
+        refrshRegistTableButton->setMaximumSize(QSize(160, 48));
+        refrshRegistTableButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: rgb(74, 85, 104);\n"
+"	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	border-radius: 6px;\n"
+"	font-size: 14px;\n"
+"	font: 63 9pt \"Bahnschrift SemiBold SemiConden\";\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    color: #1A3A6B;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: #1A3A6B;\n"
+"    font-weight: bold;\n"
+"}"));
+
+        buttonHorizontalLayout->addWidget(refrshRegistTableButton);
+
         buttonHorizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         buttonHorizontalLayout->addItem(buttonHorizontalSpacer);
@@ -461,7 +491,7 @@ public:
         topHorizontalLayout->addWidget(editFormFrame);
 
 
-        mainVerticalLayout->addLayout(topHorizontalLayout);
+        gridLayout->addLayout(topHorizontalLayout, 1, 0, 1, 1);
 
         userInfoTableView = new QTableView(UserRegisterWidget);
         userInfoTableView->setObjectName(QString::fromUtf8("userInfoTableView"));
@@ -487,7 +517,7 @@ public:
         userInfoTableView->setAlternatingRowColors(true);
         userInfoTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-        mainVerticalLayout->addWidget(userInfoTableView);
+        gridLayout->addWidget(userInfoTableView, 2, 0, 1, 1);
 
 
         retranslateUi(UserRegisterWidget);
@@ -515,6 +545,7 @@ public:
         sexLabel->setText(QApplication::translate("UserRegisterWidget", "\346\200\247\345\210\253", nullptr));
         saveButton->setText(QApplication::translate("UserRegisterWidget", "\344\277\235\345\255\230", nullptr));
         resetButton->setText(QApplication::translate("UserRegisterWidget", "\351\207\215\347\275\256", nullptr));
+        refrshRegistTableButton->setText(QApplication::translate("UserRegisterWidget", "\345\210\267\346\226\260\346\263\250\345\206\214\350\241\250", nullptr));
     } // retranslateUi
 
 };

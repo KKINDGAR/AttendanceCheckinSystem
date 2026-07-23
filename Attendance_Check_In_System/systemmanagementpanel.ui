@@ -127,7 +127,7 @@ QWidget#SystemManagementPanel {
      <widget class="QLabel" name="serilIconlabel">
       <property name="geometry">
        <rect>
-        <x>1410</x>
+        <x>1430</x>
         <y>20</y>
         <width>30</width>
         <height>30</height>
@@ -188,7 +188,7 @@ QWidget#SystemManagementPanel {
 }</string>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;实时当前时间&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLabel" name="managerLabel">

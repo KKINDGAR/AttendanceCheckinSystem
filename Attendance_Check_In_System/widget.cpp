@@ -51,6 +51,9 @@ Widget::Widget(QWidget *parent) :
     connect(m_clockTimer, &QTimer::timeout, this, &Widget::onClockTick);
     m_clockTimer->start(1000);
 
+    //发送解析卡号给smp页面
+    connect(this,&Widget::cardParseSystemPage,m_smp,&SystemManagementPanel::ondataReceived);
+
     //发送解析卡号的信号给 smp 中实际显示的员工注册页
     connect(this,&Widget::cardParsed,m_smp->getUserRegisterPage(),&UserRegisterWidget::onCardReceived);
 
@@ -72,13 +75,17 @@ Widget::Widget(QWidget *parent) :
     //发送解析卡号的信号给管理员登录页面
     connect(this,&Widget::cardParseLoginPage,m_loginAdmin,&LoginAdminWidget::onCardReceived);
 
+    //接收控制面板界面发出的返回信号
+    connect(m_smp,&SystemManagementPanel::backToAttendance,[=](){
+        this->show();
+        m_smp->hide();
+    });
     //刷卡超时定时器：500ms内无新数据则强制解析缓冲
     m_cardTimeout->setSingleShot(true);
     connect(m_cardTimeout,&QTimer::timeout,this,&Widget::onCardTimeout);
 
     //程序启动时，读取QSettings上次保存的串口配置，自动打开串口
     tryAutoOpenSerial();
-
 }
 
 Widget::~Widget()
@@ -145,7 +152,7 @@ void Widget::onCardTimeout()
         }
     }
     if(cardNumber.isEmpty()) return;
-    qDebug() << "(超时)解析到卡号:" << cardNumber;
+    qDebug() << "解析到卡号:" << cardNumber;
 
     if(this->isVisible()){
     onCardScanned(cardNumber);
@@ -156,6 +163,7 @@ void Widget::onCardTimeout()
     emit cardParseRecharge(cardNumber);
     emit cardParseRegistPage(cardNumber);
     emit cardParseLoginPage(cardNumber);
+    emit cardParseSystemPage(cardNumber);
 }
 
 //刷卡处理
@@ -167,6 +175,30 @@ void Widget::onCardScanned(const QString &card)
         ui->checkInResultLabel->setStyleSheet(
             "QLabel{ border:none; font-size:16px; color:#ff0000; background:transparent; }");
         ui->checkInResultLabel->setText("请勿重复打卡");
+        // 请勿重复打卡音效
+        QMediaPlayer *sound = new QMediaPlayer;
+        //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
+        QFile *audioFile = new QFile(":/image/duplicate_clock_in.wav", sound);
+        //打开音频
+        if (audioFile->open(QIODevice::ReadOnly)) {
+            sound->setMedia(QMediaContent(), audioFile);
+            sound->setVolume(80);
+            // 媒体加载完成后自动播放
+            connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
+                if (status == QMediaPlayer::LoadedMedia) {
+                    sound->play();
+                }
+            });
+            // 播放结束后释放内存
+            connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
+                if (state == QMediaPlayer::StoppedState) {
+                    sound->deleteLater();
+                }
+            });
+        } else {
+            qDebug() << "充值音效: 无法打开音频文件";
+            delete sound;
+        }
         return;
     }
     m_lastCard = card;
@@ -199,6 +231,30 @@ void Widget::onCardScanned(const QString &card)
     }
 
     // 3. 未注册卡号
+    // 未注册卡号音效，通过 QFile 流加载 qrc 资源，QMediaPlayer识别
+    QMediaPlayer *sound = new QMediaPlayer;
+    //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
+    QFile *audioFile = new QFile(":/image/invalid_card.wav", sound);
+    //打开音频
+    if (audioFile->open(QIODevice::ReadOnly)) {
+        sound->setMedia(QMediaContent(), audioFile);
+        sound->setVolume(80);
+        // 媒体加载完成后自动播放
+        connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
+            if (status == QMediaPlayer::LoadedMedia) {
+                sound->play();
+            }
+        });
+        // 播放结束后释放内存
+        connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
+            if (state == QMediaPlayer::StoppedState) {
+                sound->deleteLater();
+            }
+        });
+    } else {
+        qDebug() << "签到音效: 无法打开音频文件";
+        delete sound;
+    }
     ui->checkInResultLabel->setStyleSheet(
         "QLabel{ border:none; font-size:16px; color:#C0392B; background:transparent; }");
     ui->checkInResultLabel->setText(QString("未注册卡号：%1").arg(card));
@@ -293,7 +349,9 @@ void Widget::doCheckIn(const QString &card, const QString &name)
     {
         // 签到成功音效（通过 QFile 流加载 qrc 资源，QMediaPlayer 才能正确识别）
         QMediaPlayer *sound = new QMediaPlayer;
+        //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
         QFile *audioFile = new QFile(":/image/check_in_success.wav", sound);
+        //打开音频
         if (audioFile->open(QIODevice::ReadOnly)) {
             sound->setMedia(QMediaContent(), audioFile);
             sound->setVolume(80);

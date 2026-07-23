@@ -40,6 +40,7 @@ signals:
     void cardParseRecharge(const QString &cardNumber);      //解析后的纯净卡号：发给充值扣款页
     void cardParseRegistPage(const QString &cardNumber);    //解析后的纯净卡号：发给管理员注册页
     void cardParseLoginPage(const QString &cardNumber);     //解析后的纯净卡号：发给管理员登录页面
+    void cardParseSystemPage(const QString &cardNumber);    //解析后的纯净卡号：发给管理员面板页面
 private:
     void setupRecentRecords();              // 初始化最近打卡表格
     void refreshRecentRecords();            // 刷新最近打卡数据

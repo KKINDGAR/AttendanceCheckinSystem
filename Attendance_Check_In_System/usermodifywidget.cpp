@@ -75,8 +75,16 @@ void UserModifyWidget::on_resetButton_clicked()
 void UserModifyWidget::on_deleteEmployeeButton_clicked()
 {
     MySql *db = MySql::getMySql();
-    QMessageBox::information(this,"提示","确认删除该员工?");
-    db->deleteUser(m_cardNumber);
+    QString cardNumber = ui->cardNumEdit->text();
+    if(cardNumber.isEmpty())
+    {
+        QMessageBox::critical(this,"错误","卡号为空，无法操作");
+    }
+    else {
+            QMessageBox::information(this,"提示","确认删除该员工?");
+            db->deleteUser(m_cardNumber);
+    }
+
 }
 
 void UserModifyWidget::onCardReceived(const QString &cardNumber)

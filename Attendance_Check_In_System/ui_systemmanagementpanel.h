@@ -133,7 +133,7 @@ public:
         managerIconLabel->setScaledContents(true);
         serilIconlabel = new QLabel(navTopFrame);
         serilIconlabel->setObjectName(QString::fromUtf8("serilIconlabel"));
-        serilIconlabel->setGeometry(QRect(1410, 20, 30, 30));
+        serilIconlabel->setGeometry(QRect(1430, 20, 30, 30));
         serilIconlabel->setMinimumSize(QSize(30, 30));
         serilIconlabel->setMaximumSize(QSize(30, 30));
         serilIconlabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
@@ -612,7 +612,7 @@ public:
         serailTextLabel->setText(QApplication::translate("SystemManagementPanel", "\350\256\276\345\244\207COMn\345\267\262\350\277\236\346\216\245", nullptr));
         managerIconLabel->setText(QString());
         serilIconlabel->setText(QString());
-        localTimeLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt;\">\345\256\236\346\227\266\345\275\223\345\211\215\346\227\266\351\227\264</span></p></body></html>", nullptr));
+        localTimeLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><br/></p></body></html>", nullptr));
         managerLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\357\274\232</span></p></body></html>", nullptr));
         managerTitleLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:16pt;\">\347\256\241\347\220\206\345\221\230\351\235\242\346\235\277</span></p></body></html>", nullptr));
         managerNameLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\345\247\223\345\220\215</span></p></body></html>", nullptr));

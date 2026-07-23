@@ -70,3 +70,20 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     src.qrc
+
+# ==================== SeetaFace6 人脸识别库（仅Linux） ====================
+unix {
+    SEETA_PATH = $$(HOME)/opt/SeetaFace6
+
+    INCLUDEPATH += $$SEETA_PATH/include \
+                   $$SEETA_PATH/include/seeta
+
+    LIBS += -L$$SEETA_PATH/lib64 \
+            -lSeetaFaceDetector600 \
+            -lSeetaFaceLandmarker600 \
+            -lSeetaFaceRecognizer610 \
+            -lSeetaFaceTracking600 \
+            -lSeetaAuthorize \
+            -ltennis \
+            -lORZ_static
+}

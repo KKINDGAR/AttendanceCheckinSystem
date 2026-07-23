@@ -24,23 +24,8 @@ QWidget#UserRegisterWidget{
     background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="mainVerticalLayout">
-   <property name="spacing">
-    <number>15</number>
-   </property>
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
-   <property name="topMargin">
-    <number>10</number>
-   </property>
-   <property name="rightMargin">
-    <number>10</number>
-   </property>
-   <property name="bottomMargin">
-    <number>10</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="headerLayout">
      <item>
       <spacer name="headerLeftSpacer">
@@ -79,7 +64,7 @@ QWidget#UserRegisterWidget{
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="topHorizontalLayout">
      <property name="spacing">
       <number>20</number>
@@ -733,6 +718,59 @@ QPushButton:pressed {
            </widget>
           </item>
           <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="refrshRegistTableButton">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>44</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>160</width>
+              <height>48</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton
+{
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));
+	color: rgb(74, 85, 104);
+	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+	border-radius: 6px;
+	font-size: 14px;
+	font: 63 9pt &quot;Bahnschrift SemiBold SemiConden&quot;;
+}
+QPushButton:hover {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    color: #1A3A6B;
+}
+
+QPushButton:pressed {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+	color: #1A3A6B;
+    font-weight: bold;
+}</string>
+            </property>
+            <property name="text">
+             <string>刷新注册表</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="buttonHorizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -752,7 +790,7 @@ QPushButton:pressed {
      </item>
     </layout>
    </item>
-   <item>
+   <item row="2" column="0">
     <widget class="QTableView" name="userInfoTableView">
      <property name="styleSheet">
       <string notr="true">QTableView{

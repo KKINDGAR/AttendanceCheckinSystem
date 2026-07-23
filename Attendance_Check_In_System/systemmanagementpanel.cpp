@@ -1,6 +1,7 @@
 #include "systemmanagementpanel.h"
 #include "ui_systemmanagementpanel.h"
-
+#include <QTime>
+#include <QTimer>
 SystemManagementPanel::SystemManagementPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SystemManagementPanel)
@@ -19,6 +20,9 @@ SystemManagementPanel::SystemManagementPanel(QWidget *parent) :
         case 4: ui->rachargeButton->setChecked(true);      break;
         }
     });
+    m_clockTimer = new QTimer(this);
+    connect(m_clockTimer, &QTimer::timeout, this, &SystemManagementPanel::onClockTick);
+    m_clockTimer->start(1000);
 }
 
 SystemManagementPanel::~SystemManagementPanel()
@@ -35,7 +39,6 @@ void SystemManagementPanel::on_navRegisterButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
-
 
 void SystemManagementPanel::on_navModifyButton_clicked()
 {
@@ -56,7 +59,6 @@ void SystemManagementPanel::on_navSerialButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(5);
 }
-
 
 UserRegisterWidget* SystemManagementPanel::getUserRegisterPage()
 {
@@ -95,6 +97,76 @@ void SystemManagementPanel::setSerial(QSerialPort *serial)
     qobject_cast<RechargeAndDeductionWidget*>(ui->rechargeDeductionPage)->setSerial(serial);
 }
 
+void SystemManagementPanel::setAdminCard(const QString &card)
+{
+    m_cardNumber = card;
+    MySql *db = MySql::getMySql();
+    QString name;
+    if(db->getAdminName(card, name))
+    {
+        ui->managerNameLabel->setStyleSheet("QLabel"
+        "{"
+            "border:none;"
+            "font-size: 20px;"
+            "font-weight: bold;"
+            "color: #1A3A6B;"
+            "qproperty-alignment: AlignCenter;"
+            "background:transparent;"
+        "}");
+        ui->managerLabel->setStyleSheet("QLabel"
+        "{"
+            "border:none;"
+            "font-size: 20px;"
+            "font-weight: bold;"
+            "color: #1A3A6B;"
+            "qproperty-alignment: AlignCenter;"
+            "background:transparent;"
+        "}");
+        ui->managerNameLabel->setText(name);
+    }
+}
 
+void SystemManagementPanel::on_navLogoutButton_clicked()
+{
+    //退出登录，返回到考勤打卡页面
+    emit backToAttendance();
+}
 
+void SystemManagementPanel::onClockTick()
+{
+    QTime now = QTime::currentTime();
+    ui->localTimeLabel->setStyleSheet("QLabel"
+    "{"
+        "border:none;"
+        "font-size: 20px;"
+        "font-weight: bold;"
+        "color: #1A3A6B;"
+        "qproperty-alignment: AlignCenter;"
+        "background:transparent;"
+    "}");
+    ui->localTimeLabel->setText(now.toString("HH:mm:ss"));
+    updateSerialStatus();
+}
 
+void SystemManagementPanel::ondataReceived(const QString &cardNumber)
+{
+    if(!this->isVisible())
+    {
+        return;
+    }
+    m_cardNumber = cardNumber;
+}
+
+void SystemManagementPanel::updateSerialStatus()
+{
+    if(m_serial && m_serial->isOpen())
+    {
+        ui->serailTextLabel->setStyleSheet("Qlabel{background-color:#27AE60;}");
+        ui->serailTextLabel->setText(QString("串口%1已连接").arg(m_serial->portName()));
+    }
+    else
+    {
+        ui->serailTextLabel->setStyleSheet("Qlabel{background-color:#C0392B;}");
+        ui->serailTextLabel->setText("串口已断开");
+    }
+}

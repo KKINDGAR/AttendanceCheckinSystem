@@ -8,7 +8,8 @@
 #include <QString>
 #include <QSqlTableModel>
 #include <QMessageBox>
-
+#include <QMediaPlayer>
+#include <QFile>
 //数据库类
 class MySql : public QObject
 {
