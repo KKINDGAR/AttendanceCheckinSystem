@@ -7,6 +7,8 @@
 #include <QString>
 #include <QMediaPlayer>
 #include <QFile>
+#include "face/faceengine.h"
+#include "face/facecapture.h"
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget),
@@ -86,6 +88,17 @@ Widget::Widget(QWidget *parent) :
 
     //程序启动时，读取QSettings上次保存的串口配置，自动打开串口
     tryAutoOpenSerial();
+
+    //初始化人脸识别引擎
+#ifdef Q_OS_WIN
+    FaceEngine::instance()->init("D:/SeetaFace6_Windows/models");
+#else
+    FaceEngine::instance()->init("/home/zwt/opt/SeetaFace6/models");
+#endif
+    FaceCapture::instance()->setDisplay(ui->lblCamera);
+    connect(FaceCapture::instance(), &FaceCapture::frameCaptured,
+            this, &Widget::tryFaceCheckIn);
+    FaceCapture::instance()->start();
 }
 
 Widget::~Widget()
@@ -336,10 +349,106 @@ void Widget::updateSerialStatus(bool isOpen)
     }
 }
 
+// ==================== 通用音效播放 ====================
+
+void Widget::playSound(const QString &file)
+{
+    QMediaPlayer *sound = new QMediaPlayer;
+    QFile *audioFile = new QFile(file, sound);
+    if (audioFile->open(QIODevice::ReadOnly)) {
+        sound->setMedia(QMediaContent(), audioFile);
+        sound->setVolume(80);
+        connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus s) {
+            if (s == QMediaPlayer::LoadedMedia) sound->play();
+        });
+        connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State s) {
+            if (s == QMediaPlayer::StoppedState) sound->deleteLater();
+        });
+    } else {
+        delete sound;
+    }
+}
+
+// ==================== 人脸识别打卡（仅Linux） ====================
+
+void Widget::tryFaceCheckIn(const QImage &image)
+{
+    if (!this->isVisible()) return;
+    if (image.isNull()) return;
+
+    // 防抖：2秒内同一人脸不重复处理
+    static QTime lastFaceTime;
+    if (lastFaceTime.msecsTo(QTime::currentTime()) < 2000) return;
+
+    std::vector<float> curFeat;
+    QRect faceRect;
+    bool hasFace = FaceEngine::instance()->detectFace(image, curFeat, faceRect);
+
+    if (!hasFace) {
+        // 无检测到人脸 → 灰色边框（证明函数在运行）
+        ui->lblCamera->setStyleSheet(
+            "QLabel{ border: 3px solid #95A5A6; border-radius: 12px; background: black; }");
+        return;
+    }
+
+    // 人脸检测到 → 蓝色边框表示正在识别
+    ui->lblCamera->setStyleSheet(
+        "QLabel{ border: 3px solid #3498DB; border-radius: 12px; background: black; }");
+
+    // 1:N 遍历已录入人脸的员工
+    std::vector<std::tuple<QString, QString, std::vector<float>>> users;
+    MySql::getMySql()->getAllUserFaces(users);
+    if (users.empty()) {
+        ui->lblCamera->setStyleSheet(
+            "QLabel{ border: 3px solid #E67E22; border-radius: 12px; background: black; }");
+        QTimer::singleShot(2000, this, [this]() { restoreCameraBorder(); });
+        return;
+    }
+
+    float bestScore = 0.0f;
+    QString bestCard, bestName;
+    FaceEngine *fe = FaceEngine::instance();
+
+    for (const auto &u : users) {
+        float s = fe->compare(curFeat, std::get<2>(u));
+        if (s > bestScore) {
+            bestScore = s;
+            bestCard  = std::get<0>(u);
+            bestName  = std::get<1>(u);
+        }
+    }
+
+    if (bestScore >= 0.75f) {
+        // 匹配成功 → 绿色边框
+        ui->lblCamera->setStyleSheet(
+            "QLabel{ border: 3px solid #27AE60; border-radius: 12px; background: black; }");
+        lastFaceTime = QTime::currentTime();
+        onCardScanned(bestCard);
+    } else {
+        // 匹配失败 → 红色边框
+        ui->lblCamera->setStyleSheet(
+            "QLabel{ border: 3px solid #E74C3C; border-radius: 12px; background: black; }");
+        lastFaceTime = QTime::currentTime();
+        playSound(":/image/clock_in_fail.wav");
+        ui->checkInResultLabel->setStyleSheet(
+            "QLabel{ border:none; font-size:16px; color:#C0392B; background:transparent; }");
+        ui->checkInResultLabel->setText("未识别到已注册人脸");
+    }
+
+    // 2秒后恢复默认边框
+    QTimer::singleShot(2000, this, [this]() { restoreCameraBorder(); });
+}
+
+void Widget::restoreCameraBorder()
+{
+    ui->lblCamera->setStyleSheet(
+        "QLabel{ border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255)); border-radius: 12px; background: black; }");
+}
+
 //签到/签退
+
 void Widget::doCheckIn(const QString &card, const QString &name)
 {
-    //签到逻辑
     MySql *db = MySql::getMySql();
     QDate today = QDate::currentDate();
     QString dateStr = today.toString("yyyy-MM-dd");
@@ -347,31 +456,7 @@ void Widget::doCheckIn(const QString &card, const QString &name)
 
     if(db->checkIn(card, name, dateStr, timeStr))
     {
-        // 签到成功音效（通过 QFile 流加载 qrc 资源，QMediaPlayer 才能正确识别）
-        QMediaPlayer *sound = new QMediaPlayer;
-        //初始化Qfile对象，用于后续打开音频文件，并设置父对象为sound
-        QFile *audioFile = new QFile(":/image/check_in_success.wav", sound);
-        //打开音频
-        if (audioFile->open(QIODevice::ReadOnly)) {
-            sound->setMedia(QMediaContent(), audioFile);
-            sound->setVolume(80);
-            // 媒体加载完成后自动播放
-            connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-                if (status == QMediaPlayer::LoadedMedia) {
-                    sound->play();
-                }
-            });
-            // 播放结束后释放内存
-            connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-                if (state == QMediaPlayer::StoppedState) {
-                    sound->deleteLater();
-                }
-            });
-        } else {
-            qDebug() << "签到音效: 无法打开音频文件";
-            delete sound;
-        }
-
+        playSound(":/image/check_in_success.wav");
         ui->checkInResultLabel->setStyleSheet(
             "QLabel{ border:none; font-size:16px; color:#27AE60; background:transparent; }");
         ui->checkInResultLabel->setText(QString("%1  签到成功  %2").arg(name, timeStr));
@@ -387,29 +472,7 @@ void Widget::doCheckOut(const QString &card, const QString &name)
 
     if(db->checkOut(card, dateStr, timeStr))
     {
-        // 签退成功音效（通过 QFile 流加载 qrc 资源，QMediaPlayer 才能正确识别）
-        QMediaPlayer *sound = new QMediaPlayer;
-        QFile *audioFile = new QFile(":/image/check_out_success.wav", sound);
-        if (audioFile->open(QIODevice::ReadOnly)) {
-            sound->setMedia(QMediaContent(), audioFile);
-            sound->setVolume(80);
-            // 媒体加载完成后自动播放
-            connect(sound, &QMediaPlayer::mediaStatusChanged, [sound](QMediaPlayer::MediaStatus status) {
-                if (status == QMediaPlayer::LoadedMedia) {
-                    sound->play();
-                }
-            });
-            // 播放结束后释放内存
-            connect(sound, &QMediaPlayer::stateChanged, [sound](QMediaPlayer::State state) {
-                if (state == QMediaPlayer::StoppedState) {
-                    sound->deleteLater();
-                }
-            });
-        } else {
-            qDebug() << "签退音效: 无法打开音频文件";
-            delete sound;
-        }
-
+        playSound(":/image/check_out_success.wav");
         ui->checkInResultLabel->setStyleSheet(
             "QLabel{ border:none; font-size:16px; color:#27AE60; background:transparent; }");
         ui->checkInResultLabel->setText(

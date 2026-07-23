@@ -46,8 +46,11 @@ private:
     void refreshRecentRecords();            // 刷新最近打卡数据
     void tryAutoOpenSerial();               // 启动时读取QSettings自动打开串口
     void updateSerialStatus(bool isOpen);   // 更新打卡区串口状态提示
+    void playSound(const QString &file);  // 播放音效
     void doCheckIn(const QString &card, const QString &name);  // 签到方法
     void doCheckOut(const QString &card, const QString &name); // 签退方法
+    void tryFaceCheckIn(const QImage &image); // 人脸识别打卡
+    void restoreCameraBorder();              // 恢复摄像头边框
 
     Ui::Widget *ui;
     QTimer *m_clockTimer;            // 时钟定时器

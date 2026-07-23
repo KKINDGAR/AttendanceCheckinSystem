@@ -33,6 +33,7 @@ public:
     QFrame *checkInFrame;
     QHBoxLayout *checkInFrameLayout;
     QLabel *cardIconLabel;
+    QLabel *lblCamera;
     QVBoxLayout *checkInTextLayout;
     QLabel *checkInTitleLabel;
     QLabel *checkInResultLabel;
@@ -125,6 +126,20 @@ public:
         cardIconLabel->setScaledContents(true);
 
         checkInFrameLayout->addWidget(cardIconLabel);
+
+        lblCamera = new QLabel(checkInFrame);
+        lblCamera->setObjectName(QString::fromUtf8("lblCamera"));
+        lblCamera->setMinimumSize(QSize(240, 140));
+        lblCamera->setMaximumSize(QSize(320, 160));
+        lblCamera->setStyleSheet(QString::fromUtf8("QLabel{\n"
+"    border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    border-radius: 12px;\n"
+"    background: transparent;\n"
+"}"));
+        lblCamera->setScaledContents(true);
+        lblCamera->setAlignment(Qt::AlignCenter);
+
+        checkInFrameLayout->addWidget(lblCamera);
 
         checkInTextLayout = new QVBoxLayout();
         checkInTextLayout->setSpacing(8);
@@ -265,6 +280,7 @@ public:
         clockLabel->setText(QApplication::translate("Widget", "--:--:--", nullptr));
         dateLabel->setText(QApplication::translate("Widget", "----\345\271\264--\346\234\210--\346\227\245 \346\230\237\346\234\237-", nullptr));
         cardIconLabel->setText(QString());
+        lblCamera->setText(QString());
         checkInTitleLabel->setText(QApplication::translate("Widget", "<html><head/><body><p>\350\257\267\345\210\267\345\215\241\347\255\276\345\210\260 / \347\255\276\351\200\200</p></body></html>", nullptr));
         checkInResultLabel->setText(QApplication::translate("Widget", "\347\255\211\345\276\205\345\210\267\345\215\241...", nullptr));
         recentRecordsTitleLabel->setText(QApplication::translate("Widget", "<html><head/><body><p><span style=\" font-size:12pt;\">\346\234\200\350\277\221\346\211\223\345\215\241\350\256\260\345\275\225</span></p></body></html>", nullptr));

@@ -3,6 +3,8 @@
 #include <QDate>
 #include <QTime>
 #include <QMessageBox>
+#include "face/faceengine.h"
+#include "face/facecapture.h"
 UserRegisterWidget::UserRegisterWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::UserRegisterWidget)
@@ -97,7 +99,18 @@ void UserRegisterWidget::on_saveButton_clicked()
         }
         if(db->insertUser(cardId,name,age,sex,registerTime))
         {
-            QMessageBox::information(this,"成功","注册成功");
+            // 尝试录入人脸（失败不影响注册）
+            QImage frame = FaceCapture::instance()->currentFrame();
+            std::vector<float> feat;
+            if(!frame.isNull() && FaceEngine::instance()->detectFace(frame, feat))
+            {
+                db->updateUserFace(cardId, feat);
+                QMessageBox::information(this,"成功","注册成功，人脸已录入");
+            }
+            else
+            {
+                QMessageBox::information(this,"成功","注册成功（未检测到人脸，可后续补录）");
+            }
             //刷新表格
             m_model->select();
             // 清空所有的输入框

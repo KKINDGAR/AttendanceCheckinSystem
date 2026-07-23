@@ -1,5 +1,7 @@
 #include "usermodifywidget.h"
 #include "ui_usermodifywidget.h"
+#include "face/faceengine.h"
+#include "face/facecapture.h"
 
 UserModifyWidget::UserModifyWidget(QWidget *parent) :
     QWidget(parent),
@@ -106,6 +108,32 @@ void UserModifyWidget::onCardReceived(const QString &cardNumber)
         ui->ageSpinBox->setValue(age);
         ui->sexComboBox->setCurrentText(sex);
         ui->registerTimeEdit->setText(registerTime);
+    }
+}
+
+void UserModifyWidget::on_captureFaceBtn_clicked()
+{
+    if (m_cardNumber.isEmpty()) {
+        QMessageBox::warning(this, "提示", "请先刷卡定位员工");
+        return;
+    }
+
+    QImage frame = FaceCapture::instance()->currentFrame();
+    if (frame.isNull()) {
+        QMessageBox::warning(this, "提示", "摄像头未就绪，请稍后再试");
+        return;
+    }
+
+    std::vector<float> feat;
+    if (!FaceEngine::instance()->detectFace(frame, feat)) {
+        QMessageBox::warning(this, "提示", "未检测到人脸，请面对摄像头");
+        return;
+    }
+
+    if (db->updateUserFace(m_cardNumber, feat)) {
+        QMessageBox::information(this, "成功", "人脸补录成功");
+    } else {
+        QMessageBox::critical(this, "失败", "人脸数据保存失败");
     }
 }
 

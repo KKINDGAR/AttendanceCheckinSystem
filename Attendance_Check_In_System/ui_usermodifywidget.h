@@ -55,6 +55,7 @@ public:
     QPushButton *confirmModifyButton;
     QPushButton *resetButton;
     QPushButton *deleteEmployeeButton;
+    QPushButton *captureFaceBtn;
     QPushButton *refrshUserTableButton;
     QSpacerItem *buttonHorizontalSpacer;
     QTableView *userInfoTableView;
@@ -423,6 +424,32 @@ public:
 
         buttonHorizontalLayout->addWidget(deleteEmployeeButton);
 
+        captureFaceBtn = new QPushButton(editFormFrame);
+        captureFaceBtn->setObjectName(QString::fromUtf8("captureFaceBtn"));
+        captureFaceBtn->setMinimumSize(QSize(120, 44));
+        captureFaceBtn->setMaximumSize(QSize(160, 48));
+        captureFaceBtn->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: rgb(74, 85, 104);\n"
+"	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	border-radius: 6px;\n"
+"	font-size: 14px;\n"
+"	font: 63 9pt \"Bahnschrift SemiBold SemiConden\";\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    color: #1A3A6B;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: #1A3A6B;\n"
+"    font-weight: bold;\n"
+"}"));
+
+        buttonHorizontalLayout->addWidget(captureFaceBtn);
+
         refrshUserTableButton = new QPushButton(editFormFrame);
         refrshUserTableButton->setObjectName(QString::fromUtf8("refrshUserTableButton"));
         refrshUserTableButton->setMinimumSize(QSize(120, 44));
@@ -511,6 +538,7 @@ public:
         confirmModifyButton->setText(QApplication::translate("UserModifyWidget", "\347\241\256\350\256\244\344\277\256\346\224\271", nullptr));
         resetButton->setText(QApplication::translate("UserModifyWidget", "\351\207\215\347\275\256", nullptr));
         deleteEmployeeButton->setText(QApplication::translate("UserModifyWidget", "\345\210\240\351\231\244\345\221\230\345\267\245", nullptr));
+        captureFaceBtn->setText(QApplication::translate("UserModifyWidget", "\344\272\272\350\204\270\350\241\245\345\275\225", nullptr));
         refrshUserTableButton->setText(QApplication::translate("UserModifyWidget", "\345\210\267\346\226\260\345\221\230\345\267\245\350\241\250", nullptr));
     } // retranslateUi
 

@@ -2,6 +2,7 @@
 #define USERMODIFYWIDGET_H
 
 #include <QWidget>
+#include <vector>
 #include "mysql.h"
 #include "serialsetwidget.h"
 #include "userregisterwidget.h"
@@ -27,6 +28,7 @@ private slots:
     void on_deleteEmployeeButton_clicked(); //删除员工按钮槽函数
 
     void on_refrshUserTableButton_clicked();
+    void on_captureFaceBtn_clicked();  // 人脸补录
 
 public slots:
     void onCardReceived(const QString &cardNumber); //接收解析后的纯卡号

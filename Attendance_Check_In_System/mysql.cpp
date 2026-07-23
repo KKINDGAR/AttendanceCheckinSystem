@@ -56,7 +56,8 @@ void MySql::creatTable()
               "age INT NOT NULL CHECK(age>=0 AND age<=100),"
               "sex TEXT NOT NULL CHECK(sex IN('男','女')),"
               "registerTime TEXT NOT NULL,"
-              "balance REAL NOT NULL DEFAULT 0.00"
+              "balance REAL NOT NULL DEFAULT 0.00,"
+              "faceFeature BLOB"
           ")";
     if(query.exec(sql))
     {
@@ -66,6 +67,8 @@ void MySql::creatTable()
     {
         qDebug()<<"user is error:"<<query.lastError().text()<<endl;
     }
+    // 兼容旧库：如果表已存在但没有 faceFeature 列，则追加
+    query.exec("ALTER TABLE user ADD COLUMN faceFeature BLOB");
 
     // 考勤记录表
     sql = "CREATE TABLE IF NOT EXISTS card("
@@ -232,7 +235,7 @@ bool MySql::deleteAdmin(QString adminCard)
 bool MySql::insertUser(QString card, QString name, int age, QString sex, QString registerTime)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO user VALUES(:card,:name,:age,:sex,:registerTime,0.00)");
+    query.prepare("INSERT INTO user(card,name,age,sex,registerTime,balance,faceFeature) VALUES(:card,:name,:age,:sex,:registerTime,0.00,NULL)");
     query.bindValue(":card",card);
     query.bindValue(":name",name);
     query.bindValue(":age",age);
@@ -443,6 +446,31 @@ bool MySql::addTransaction(QString card, QString name, QString type, double amou
     }
     qDebug()<<"交易记录添加失败:"<<query.lastError().text()<<endl;
     return false;
+}
+
+bool MySql::updateUserFace(QString card, const std::vector<float> &feature)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE user SET faceFeature=:feat WHERE card=:card");
+    QByteArray blob(reinterpret_cast<const char*>(feature.data()),feature.size() * sizeof(float));
+    query.bindValue(":feat", blob);
+    query.bindValue(":card", card);
+    return query.exec();
+}
+
+bool MySql::getAllUserFaces(std::vector<std::tuple<QString, QString, std::vector<float> > > &users)
+{
+    QSqlQuery query;
+        query.exec("SELECT card, name, faceFeature FROM user WHERE faceFeature IS NOT NULL");
+        while (query.next()) {
+            QString card = query.value(0).toString();
+            QString name = query.value(1).toString();
+            QByteArray blob = query.value(2).toByteArray();
+            std::vector<float> feat(blob.size() / sizeof(float));
+            memcpy(feat.data(), blob.data(), blob.size());
+            users.emplace_back(card, name, feat);
+        }
+        return true;
 }
 
 MySql *MySql::getMySql()

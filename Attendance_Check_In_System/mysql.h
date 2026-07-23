@@ -2,14 +2,18 @@
 #define MYSQL_H
 
 #include <QObject>
-#include <QSqlDatabase>//数据库核心头文件
-#include <QSqlQuery>//数据库操作语句头文件
-#include <QSqlError>//数据库错误捕获头文件
+#include <QSqlDatabase> //数据库核心头文件
+#include <QSqlQuery>    //数据库操作语句头文件
+#include <QSqlError>    //数据库错误捕获头文件
 #include <QString>
 #include <QSqlTableModel>
 #include <QMessageBox>
 #include <QMediaPlayer>
 #include <QFile>
+#include <seeta/FaceDetector.h>  //人脸检测头文件
+#include <seeta/FaceLandmarker.h>//关键点定位头文件
+#include <seeta/FaceRecognizer.h>//特征提取 + 1:1比对头文件
+#include <seeta/Common/Struct.h> //人脸数据结构头文件
 //数据库类
 class MySql : public QObject
 {
@@ -22,9 +26,8 @@ private:
     //定义一个静态的制度的指针成员保存唯一的实例地址(类中定义，类外实现)
     static MySql *const p;
 public:
-
+    //创建表
     void creatTable();
-
     // 插入管理员(卡号，姓名，密码)
     void insertData(QString adminCard, QString name, QString pwd);
     // 刷卡登录(仅验证卡号，无需密码)
@@ -39,7 +42,6 @@ public:
     bool updateAdminPwd(QString adminCard, QString newPwd);
     // 删除管理员
     bool deleteAdmin(QString adminCard);
-
     // 注册新员工
     bool insertUser(QString card, QString name, int age, QString sex, QString registerTime);
     // 修改员工信息(卡号不可改)
@@ -64,14 +66,17 @@ public:
     bool checkOut(QString card, QString date, QString time);
     // 根据卡号检查当天签到状态
     bool isCheckedInTodayByCard(QString card, QString date);
-
     //根据姓名查询当天状态签到
     bool isCheckedInTodayByName(QString name,QString date);
-
     //交易记录表(records)
     // 添加交易记录(充值/扣款)
     bool addTransaction(QString card, QString name, QString type, double amount, double balanceAfter, QString remark = "");
 
+    //追加功能：人脸识别
+    //更新人脸数据,vector<float> &feature存储人脸数据向量
+    bool updateUserFace(QString card,const std::vector<float> &feature);
+    //获取所有人脸数据，用于1：N比对
+    bool getAllUserFaces(std::vector<std::tuple<QString,QString,std::vector<float>>> &users);
     //定义公共的静态函数来获取唯一的数据库
     static MySql *getMySql(void);
 

@@ -14,7 +14,7 @@ HomePageWidget::HomePageWidget(QWidget *parent) :
     ui->setupUi(this);
     m_serial = nullptr;
     m_clockTimer = new QTimer(this);
-    m_recentModel = new QSqlTableModel(this);
+    m_recentModel = new QSqlQueryModel(this);
     //最近考勤表格
     setupRecentTable();
 

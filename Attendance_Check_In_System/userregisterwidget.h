@@ -2,6 +2,7 @@
 #define USERREGISTERWIDGET_H
 
 #include <QWidget>
+#include <vector>
 #include "mysql.h"
 #include "serialsetwidget.h"
 //用户信息注册类
@@ -45,6 +46,7 @@ private:
     MySql *db;
     QTimer *m_cardTimer;//刷卡超时定时器
     QByteArray m_cardBuffer; //刷卡数据缓冲区
+    std::vector<float> m_faceFeature; //人脸特征向量
 };
 
 #endif // USERREGISTERWIDGET_H

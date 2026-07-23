@@ -51,6 +51,10 @@ HEADERS += \
     rechargeanddeductionwidget.h \
     loginadminwidget.h
 
+# 人脸识别模块
+SOURCES += face/faceengine.cpp face/facecapture.cpp
+HEADERS += face/faceengine.h   face/facecapture.h
+
 FORMS += \
         widget.ui \
     registerwidget.ui \
@@ -71,8 +75,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     src.qrc
 
-# ==================== SeetaFace6 人脸识别库（仅Linux） ====================
+# ==================== SeetaFace6 人脸识别库 ====================
+
 unix {
+    # ---- Ubuntu (GCC) ----
     SEETA_PATH = $$(HOME)/opt/SeetaFace6
 
     INCLUDEPATH += $$SEETA_PATH/include \
@@ -86,4 +92,25 @@ unix {
             -lSeetaAuthorize \
             -ltennis \
             -lORZ_static
+}
+
+win32 {
+    # ---- Windows (MinGW) ----
+    SEETA_PATH = D:/SeetaFace6_Windows
+    INCLUDEPATH += $$SEETA_PATH/include \
+                   $$SEETA_PATH/include/seeta
+
+    LIBS += -L$$SEETA_PATH/lib \
+            -lSeetaFaceDetector600 \
+            -lSeetaFaceLandmarker600 \
+            -lSeetaFaceRecognizer610 \
+            -lSeetaFaceTracking600 \
+            -lSeetaAuthorize \
+            -ltennis \
+            -lORZ
+
+    # 构建后自动复制 DLL 到 exe 目录
+    CONFIG(release, debug|release): DLL_DEST = $$OUT_PWD/release
+    CONFIG(debug, debug|release):   DLL_DEST = $$OUT_PWD/debug
+    QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$shell_path($$SEETA_PATH/dll) $$shell_path($$DLL_DEST)
 }
