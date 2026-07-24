@@ -37,5 +37,7 @@
         <file>image/serailConnect.png</file>
         <file>image/WindowIcon.png</file>
         <file>image/adminmanage.png</file>
+        <file>image/app.ico</file>
+        <file>image/shichen.png</file>
     </qresource>
 </RCC>

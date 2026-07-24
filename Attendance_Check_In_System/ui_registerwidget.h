@@ -281,14 +281,22 @@ public:
         backLoginButton->setMinimumSize(QSize(0, 18));
         backLoginButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
-"	font-size: 13px;\n"
-"    color: #666666;\n"
-"	border:none;\n"
-"	background:transparent;\n"
-"	color:#55aaff;\n"
+"	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: rgb(74, 85, 104);\n"
+"	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	border-radius: 6px;\n"
+"	font-size: 14px;\n"
+"	font: 63 9pt \"Bahnschrift SemiBold SemiConden\";\n"
 "}\n"
-"QPushButton#backLoginButton:hover{\n"
-"    color: qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 #50a3ff, stop:1 #3086fa);\n"
+"QPushButton:hover {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    color: #1A3A6B;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"	color: #1A3A6B;\n"
+"    font-weight: bold;\n"
 "}"));
 
         horizontalLayout_2->addWidget(backLoginButton);
@@ -319,8 +327,8 @@ public:
         cardIconLabel->setText(QString());
         submitButton->setText(QApplication::translate("RegisterWidget", "\346\263\250\345\206\214", nullptr));
         cancelSubmitButton->setText(QApplication::translate("RegisterWidget", "\345\217\226\346\266\210", nullptr));
-        contentTextLabel->setText(QApplication::translate("RegisterWidget", "\345\267\262\346\234\211\350\264\246\347\256\241\347\220\206\345\221\230\350\264\246\345\217\267?", nullptr));
-        backLoginButton->setText(QApplication::translate("RegisterWidget", "\350\277\224\345\233\236\347\231\273\345\275\225", nullptr));
+        contentTextLabel->setText(QString());
+        backLoginButton->setText(QApplication::translate("RegisterWidget", "\350\277\224\345\233\236\347\256\241\347\220\206\345\221\230\350\256\276\347\275\256", nullptr));
     } // retranslateUi
 
 };

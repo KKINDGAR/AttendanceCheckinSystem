@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FRID 智慧考勤系统</string>
+   <string>识辰工作台</string>
   </property>
   <property name="windowIcon">
    <iconset resource="src.qrc">
-    <normaloff>:/image/WindowIcon.png</normaloff>:/image/WindowIcon.png</iconset>
+    <normaloff>:/image/shichen.png</normaloff>:/image/shichen.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {

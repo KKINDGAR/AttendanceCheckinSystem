@@ -1,7 +1,7 @@
 #include "mysql.h"
 #include <QDebug>
 
-MySql * const MySql::p = new MySql("AttendanceSystem.db");
+MySql * MySql::p = nullptr;
 
 MySql::MySql(QObject *parent) : QObject(parent)
 {
@@ -495,5 +495,6 @@ bool MySql::getAllUserFaces(std::vector<std::tuple<QString, QString, std::vector
 
 MySql *MySql::getMySql()
 {
+    if (!p) p = new MySql("AttendanceSystem.db");
     return p;
 }

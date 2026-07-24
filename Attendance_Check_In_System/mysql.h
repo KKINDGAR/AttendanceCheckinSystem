@@ -23,8 +23,8 @@ private:
     MySql(QString dbName,QObject *parent = nullptr);
     ~MySql();
 private:
-    //定义一个静态的制度的指针成员保存唯一的实例地址(类中定义，类外实现)
-    static MySql *const p;
+    //定义一个静态的指针成员保存唯一的实例地址(类中定义，类外实现)
+    static MySql *p;
 public:
     //创建表
     void creatTable();

@@ -8,8 +8,10 @@ QT       += core gui serialport multimedia multimediawidgets sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Attendance_Check_In_System
+TARGET = ShiChen
 TEMPLATE = app
+
+RC_ICONS = image/app.ico
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings

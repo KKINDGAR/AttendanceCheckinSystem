@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include <QCoreApplication>
 #include <QDate>
 #include <QTime>
 #include <QDebug>
@@ -90,13 +91,30 @@ Widget::Widget(QWidget *parent) :
     tryAutoOpenSerial();
 
     //初始化人脸识别引擎
+    // 智能模型路径：
+    // 1) ./models（相对路径，Enigma 打包 + Qt Creator 正常运行）
+    // 2) exe目录/models（绝对路径，windeployqt 打包版）
+    // 3) SDK绝对路径（开发环境回退）
+    QStringList searchPaths;
+    searchPaths << "./models"
+                << QString("%1/models").arg(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_WIN
-qDebug() << "[人脸] 模型路径: D:/SeetaFace6_Windows/models";
-    bool initOk = FaceEngine::instance()->init("D:/SeetaFace6_Windows/models");
+    searchPaths << "D:/SeetaFace6_Windows/models";
 #else
-qDebug() << "[人脸] 模型路径: /home/zwt/opt/SeetaFace6/models";
-    bool initOk = FaceEngine::instance()->init("/home/zwt/opt/SeetaFace6/models");
+    searchPaths << "/home/zwt/opt/SeetaFace6/models";
 #endif
+
+    QString modelPath;
+    for (const QString &p : searchPaths) {
+        if (QFile::exists(p + "/face_detector.csta")) {
+            modelPath = p;
+            break;
+        }
+    }
+    bool initOk = false;
+    if (!modelPath.isEmpty())
+        initOk = FaceEngine::instance()->init(modelPath.toStdString());
+    qDebug() << "[人脸] 模型路径:" << modelPath << (initOk ? "成功" : "失败");
 qDebug() << "[人脸] FaceEngine初始化:" << (initOk ? "成功" : "失败");
 
     // 创建人脸检测工作线程（所有重活在此线程执行，不阻塞UI）
