@@ -28,280 +28,30 @@ QWidget#SystemManagementPanel {
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QFrame" name="navTopFrame">
+   <item row="1" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
      <property name="minimumSize">
       <size>
-       <width>0</width>
-       <height>71</height>
+       <width>1301</width>
+       <height>831</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>16777215</width>
-       <height>71</height>
+       <width>1301</width>
+       <height>831</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QFrame{
-    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
-    border: none;
-    border-bottom: 1px solid #E8ECF2;
-}</string>
+     <property name="currentIndex">
+      <number>6</number>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="serailTextLabel">
-      <property name="geometry">
-       <rect>
-        <x>1450</x>
-        <y>20</y>
-        <width>151</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>151</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>151</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel{
-    font-size: 15px;
-    color: rgb(0, 0, 0);
-    qproperty-alignment: AlignCenter;
-	font-weight: bold;
-	background:transparent;
-}
-</string>
-      </property>
-      <property name="text">
-       <string>设备COMn已连接</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="managerIconLabel">
-      <property name="geometry">
-       <rect>
-        <x>1</x>
-        <y>1</y>
-        <width>71</width>
-        <height>69</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>71</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>71</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel
-{
-	border:none;
-	background:transparent;
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="src.qrc">:/image/manager.png</pixmap>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="serilIconlabel">
-      <property name="geometry">
-       <rect>
-        <x>1430</x>
-        <y>20</y>
-        <width>30</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>30</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>30</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel{
-	border-radius: 15px;
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="src.qrc">:/image/Serail1.png</pixmap>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="localTimeLabel">
-      <property name="geometry">
-       <rect>
-        <x>1011</x>
-        <y>1</y>
-        <width>128</width>
-        <height>69</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>128</width>
-        <height>41</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>128</width>
-        <height>128</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel
-{
-	background:transparent;
-}</string>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="managerLabel">
-      <property name="geometry">
-       <rect>
-        <x>522</x>
-        <y>15</y>
-        <width>88</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>41</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>41</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel
-{
-	border:none;
-	font-size: 16px;
-    font-weight: bold;
-    color: #1A3A6B;
-    qproperty-alignment: AlignCenter;
-	background:transparent;
-}</string>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;管理员：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="managerTitleLabel">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>0</y>
-        <width>160</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>71</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>71</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel{
-	border:none;
-    font-size: 16px;
-    font-weight: bold;
-    color: #1A3A6B;
-    qproperty-alignment: AlignCenter;
-	background:transparent;
-}</string>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;管理员面板&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="managerNameLabel">
-      <property name="geometry">
-       <rect>
-        <x>619</x>
-        <y>15</y>
-        <width>110</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>41</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>41</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel
-{
-	border:none;
-	font-size: 16px;
-    font-weight: bold;
-    color: #1A3A6B;
-    qproperty-alignment: AlignCenter;
-	background:transparent;
-}</string>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;管理员姓名&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
+     <widget class="HomePageWidget" name="homePage"/>
+     <widget class="UserRegisterWidget" name="userRegisterPage"/>
+     <widget class="UserModifyWidget" name="userModifyPage"/>
+     <widget class="AttendanceRecordsWidget" name="atendencePage"/>
+     <widget class="RechargeAndDeductionWidget" name="rechargeDeductionPage"/>
+     <widget class="SerialSetWidget" name="serailSetPage"/>
+     <widget class="SetAdminWidge" name="adminSettingsPage"/>
     </widget>
    </item>
    <item row="1" column="0">
@@ -336,7 +86,7 @@ QWidget#SystemManagementPanel {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>301</width>
+        <width>310</width>
         <height>831</height>
        </rect>
       </property>
@@ -917,6 +667,131 @@ QPushButton:pressed {
           </spacer>
          </item>
          <item>
+          <widget class="QWidget" name="adminBtnWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QWidget#adminBtnWidget{background:transparent;}</string>
+           </property>
+           <layout class="QVBoxLayout" name="adminBtnLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QLabel" name="navAdminManageLabel">
+                <property name="minimumSize">
+                 <size>
+                  <width>44</width>
+                  <height>44</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>48</width>
+                  <height>48</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QLabel
+{
+    background:transparent;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="src.qrc">:/image/manager.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="navAdminManageButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>44</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>48</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton
+{
+    background: transparent;
+    color: rgb(74, 85, 104);
+    border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    border-radius: 6px;
+    font-size: 14px;
+}
+QPushButton:hover {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    color: #1A3A6B;
+}
+QPushButton:checked {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    color: #1A3A6B;
+    font-weight: bold;
+}
+QPushButton:pressed {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+}</string>
+                </property>
+                <property name="text">
+                 <string>管理员设置</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="autoExclusive">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
             <widget class="QLabel" name="navLogoutLabel">
@@ -1004,29 +879,280 @@ QPushButton:pressed {
      </widget>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QStackedWidget" name="stackedWidget">
+   <item row="0" column="0" colspan="2">
+    <widget class="QFrame" name="navTopFrame">
      <property name="minimumSize">
       <size>
-       <width>1301</width>
-       <height>831</height>
+       <width>0</width>
+       <height>71</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>1301</width>
-       <height>831</height>
+       <width>16777215</width>
+       <height>71</height>
       </size>
      </property>
-     <property name="currentIndex">
-      <number>5</number>
+     <property name="styleSheet">
+      <string notr="true">QFrame{
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    border: none;
+    border-bottom: 1px solid #E8ECF2;
+}</string>
      </property>
-     <widget class="HomePageWidget" name="homePage"/>
-     <widget class="UserRegisterWidget" name="userRegisterPage"/>
-     <widget class="UserModifyWidget" name="userModifyPage"/>
-     <widget class="AttendanceRecordsWidget" name="atendencePage"/>
-     <widget class="RechargeAndDeductionWidget" name="rechargeDeductionPage"/>
-     <widget class="SerialSetWidget" name="serailSetPage"/>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="serailTextLabel">
+      <property name="geometry">
+       <rect>
+        <x>1450</x>
+        <y>20</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>151</width>
+        <height>31</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>151</width>
+        <height>31</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+    font-size: 15px;
+    color: rgb(0, 0, 0);
+    qproperty-alignment: AlignCenter;
+	font-weight: bold;
+	background:transparent;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>设备COMn已连接</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="managerIconLabel">
+      <property name="geometry">
+       <rect>
+        <x>1</x>
+        <y>1</y>
+        <width>71</width>
+        <height>69</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>71</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>71</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel
+{
+	border:none;
+	background:transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="src.qrc">:/image/manager.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="serilIconlabel">
+      <property name="geometry">
+       <rect>
+        <x>1430</x>
+        <y>20</y>
+        <width>30</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	border-radius: 15px;
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="src.qrc">:/image/Serail1.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="localTimeLabel">
+      <property name="geometry">
+       <rect>
+        <x>1011</x>
+        <y>1</y>
+        <width>128</width>
+        <height>69</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>128</width>
+        <height>41</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>128</width>
+        <height>128</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel
+{
+	background:transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="managerLabel">
+      <property name="geometry">
+       <rect>
+        <x>522</x>
+        <y>15</y>
+        <width>88</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>41</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>41</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel
+{
+	border:none;
+	font-size: 16px;
+    font-weight: bold;
+    color: #1A3A6B;
+    qproperty-alignment: AlignCenter;
+	background:transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;管理员：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="managerTitleLabel">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>0</y>
+        <width>160</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>71</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>71</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+	border:none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1A3A6B;
+    qproperty-alignment: AlignCenter;
+	background:transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;管理员面板&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="managerNameLabel">
+      <property name="geometry">
+       <rect>
+        <x>619</x>
+        <y>15</y>
+        <width>110</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>41</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>41</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel
+{
+	border:none;
+	font-size: 16px;
+    font-weight: bold;
+    color: #1A3A6B;
+    qproperty-alignment: AlignCenter;
+	background:transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;管理员姓名&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -1066,6 +1192,12 @@ QPushButton:pressed {
    <class>SerialSetWidget</class>
    <extends>QWidget</extends>
    <header>serialsetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SetAdminWidge</class>
+   <extends>QStackedWidget</extends>
+   <header>setadminwidge.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

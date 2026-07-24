@@ -425,7 +425,7 @@ QPushButton:pressed {
 </string>
              </property>
              <property name="text">
-              <string>已有账管理员账号?</string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -440,18 +440,26 @@ QPushButton:pressed {
              <property name="styleSheet">
               <string notr="true">QPushButton
 {
-	font-size: 13px;
-    color: #666666;
-	border:none;
-	background:transparent;
-	color:#55aaff;
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.248927 rgba(85, 116, 143, 217), stop:1 rgba(255, 255, 255, 255));
+	color: rgb(74, 85, 104);
+	border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+	border-radius: 6px;
+	font-size: 14px;
+	font: 63 9pt &quot;Bahnschrift SemiBold SemiConden&quot;;
 }
-QPushButton#backLoginButton:hover{
-    color: qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 #50a3ff, stop:1 #3086fa);
+QPushButton:hover {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+    color: #1A3A6B;
+}
+
+QPushButton:pressed {
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
+	color: #1A3A6B;
+    font-weight: bold;
 }</string>
              </property>
              <property name="text">
-              <string>返回登录</string>
+              <string>返回管理员设置</string>
              </property>
             </widget>
            </item>

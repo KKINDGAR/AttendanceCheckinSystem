@@ -10,6 +10,7 @@
 #define UI_SYSTEMMANAGEMENTPANEL_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -24,6 +25,7 @@
 #include "homepagewidget.h"
 #include "rechargeanddeductionwidget.h"
 #include "serialsetwidget.h"
+#include "setadminwidge.h"
 #include "usermodifywidget.h"
 #include "userregisterwidget.h"
 
@@ -33,14 +35,14 @@ class Ui_SystemManagementPanel
 {
 public:
     QGridLayout *gridLayout;
-    QFrame *navTopFrame;
-    QLabel *serailTextLabel;
-    QLabel *managerIconLabel;
-    QLabel *serilIconlabel;
-    QLabel *localTimeLabel;
-    QLabel *managerLabel;
-    QLabel *managerTitleLabel;
-    QLabel *managerNameLabel;
+    QStackedWidget *stackedWidget;
+    HomePageWidget *homePage;
+    UserRegisterWidget *userRegisterPage;
+    UserModifyWidget *userModifyPage;
+    AttendanceRecordsWidget *atendencePage;
+    RechargeAndDeductionWidget *rechargeDeductionPage;
+    SerialSetWidget *serailSetPage;
+    SetAdminWidge *adminSettingsPage;
     QFrame *navFrame;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *navFrameVerticalLayout;
@@ -69,22 +71,32 @@ public:
     QLabel *navSerialLabel;
     QPushButton *navSerialButton;
     QSpacerItem *verticalSpacer_6;
+    QWidget *adminBtnWidget;
+    QVBoxLayout *adminBtnLayout;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *navAdminManageLabel;
+    QPushButton *navAdminManageButton;
+    QSpacerItem *verticalSpacer_7;
     QHBoxLayout *horizontalLayout_6;
     QLabel *navLogoutLabel;
     QPushButton *navLogoutButton;
-    QStackedWidget *stackedWidget;
-    HomePageWidget *homePage;
-    UserRegisterWidget *userRegisterPage;
-    UserModifyWidget *userModifyPage;
-    AttendanceRecordsWidget *atendencePage;
-    RechargeAndDeductionWidget *rechargeDeductionPage;
-    SerialSetWidget *serailSetPage;
+    QFrame *navTopFrame;
+    QLabel *serailTextLabel;
+    QLabel *managerIconLabel;
+    QLabel *serilIconlabel;
+    QLabel *localTimeLabel;
+    QLabel *managerLabel;
+    QLabel *managerTitleLabel;
+    QLabel *managerNameLabel;
 
     void setupUi(QWidget *SystemManagementPanel)
     {
         if (SystemManagementPanel->objectName().isEmpty())
             SystemManagementPanel->setObjectName(QString::fromUtf8("SystemManagementPanel"));
         SystemManagementPanel->resize(1636, 937);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/image/manager.png"), QSize(), QIcon::Normal, QIcon::Off);
+        SystemManagementPanel->setWindowIcon(icon);
         SystemManagementPanel->setStyleSheet(QString::fromUtf8("QWidget {\n"
 "    font-family: \"Microsoft YaHei\", \"\345\276\256\350\275\257\351\233\205\351\273\221\", \"PingFang SC\", sans-serif;\n"
 "    font-size: 14px;\n"
@@ -95,104 +107,33 @@ public:
 "}"));
         gridLayout = new QGridLayout(SystemManagementPanel);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        navTopFrame = new QFrame(SystemManagementPanel);
-        navTopFrame->setObjectName(QString::fromUtf8("navTopFrame"));
-        navTopFrame->setMinimumSize(QSize(0, 71));
-        navTopFrame->setMaximumSize(QSize(16777215, 71));
-        navTopFrame->setStyleSheet(QString::fromUtf8("QFrame{\n"
-"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
-"    border: none;\n"
-"    border-bottom: 1px solid #E8ECF2;\n"
-"}"));
-        navTopFrame->setFrameShape(QFrame::StyledPanel);
-        navTopFrame->setFrameShadow(QFrame::Raised);
-        serailTextLabel = new QLabel(navTopFrame);
-        serailTextLabel->setObjectName(QString::fromUtf8("serailTextLabel"));
-        serailTextLabel->setGeometry(QRect(1450, 20, 151, 31));
-        serailTextLabel->setMinimumSize(QSize(151, 31));
-        serailTextLabel->setMaximumSize(QSize(151, 31));
-        serailTextLabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
-"    font-size: 15px;\n"
-"    color: rgb(0, 0, 0);\n"
-"    qproperty-alignment: AlignCenter;\n"
-"	font-weight: bold;\n"
-"	background:transparent;\n"
-"}\n"
-""));
-        managerIconLabel = new QLabel(navTopFrame);
-        managerIconLabel->setObjectName(QString::fromUtf8("managerIconLabel"));
-        managerIconLabel->setGeometry(QRect(1, 1, 71, 69));
-        managerIconLabel->setMinimumSize(QSize(71, 0));
-        managerIconLabel->setMaximumSize(QSize(71, 16777215));
-        managerIconLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{\n"
-"	border:none;\n"
-"	background:transparent;\n"
-"}"));
-        managerIconLabel->setPixmap(QPixmap(QString::fromUtf8(":/image/manager.png")));
-        managerIconLabel->setScaledContents(true);
-        serilIconlabel = new QLabel(navTopFrame);
-        serilIconlabel->setObjectName(QString::fromUtf8("serilIconlabel"));
-        serilIconlabel->setGeometry(QRect(1430, 20, 30, 30));
-        serilIconlabel->setMinimumSize(QSize(30, 30));
-        serilIconlabel->setMaximumSize(QSize(30, 30));
-        serilIconlabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
-"	border-radius: 15px;\n"
-"}"));
-        serilIconlabel->setPixmap(QPixmap(QString::fromUtf8(":/image/Serail1.png")));
-        serilIconlabel->setScaledContents(true);
-        localTimeLabel = new QLabel(navTopFrame);
-        localTimeLabel->setObjectName(QString::fromUtf8("localTimeLabel"));
-        localTimeLabel->setGeometry(QRect(1011, 1, 128, 69));
-        localTimeLabel->setMinimumSize(QSize(128, 41));
-        localTimeLabel->setMaximumSize(QSize(128, 128));
-        localTimeLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{\n"
-"	background:transparent;\n"
-"}"));
-        managerLabel = new QLabel(navTopFrame);
-        managerLabel->setObjectName(QString::fromUtf8("managerLabel"));
-        managerLabel->setGeometry(QRect(522, 15, 88, 41));
-        managerLabel->setMinimumSize(QSize(0, 41));
-        managerLabel->setMaximumSize(QSize(16777215, 41));
-        managerLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{\n"
-"	border:none;\n"
-"	font-size: 16px;\n"
-"    font-weight: bold;\n"
-"    color: #1A3A6B;\n"
-"    qproperty-alignment: AlignCenter;\n"
-"	background:transparent;\n"
-"}"));
-        managerTitleLabel = new QLabel(navTopFrame);
-        managerTitleLabel->setObjectName(QString::fromUtf8("managerTitleLabel"));
-        managerTitleLabel->setGeometry(QRect(90, 0, 160, 71));
-        managerTitleLabel->setMinimumSize(QSize(0, 71));
-        managerTitleLabel->setMaximumSize(QSize(16777215, 71));
-        managerTitleLabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
-"	border:none;\n"
-"    font-size: 16px;\n"
-"    font-weight: bold;\n"
-"    color: #1A3A6B;\n"
-"    qproperty-alignment: AlignCenter;\n"
-"	background:transparent;\n"
-"}"));
-        managerNameLabel = new QLabel(navTopFrame);
-        managerNameLabel->setObjectName(QString::fromUtf8("managerNameLabel"));
-        managerNameLabel->setGeometry(QRect(619, 15, 110, 41));
-        managerNameLabel->setMinimumSize(QSize(0, 41));
-        managerNameLabel->setMaximumSize(QSize(16777215, 41));
-        managerNameLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
-"{\n"
-"	border:none;\n"
-"	font-size: 16px;\n"
-"    font-weight: bold;\n"
-"    color: #1A3A6B;\n"
-"    qproperty-alignment: AlignCenter;\n"
-"	background:transparent;\n"
-"}"));
+        stackedWidget = new QStackedWidget(SystemManagementPanel);
+        stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
+        stackedWidget->setMinimumSize(QSize(1301, 831));
+        stackedWidget->setMaximumSize(QSize(1301, 831));
+        homePage = new HomePageWidget();
+        homePage->setObjectName(QString::fromUtf8("homePage"));
+        stackedWidget->addWidget(homePage);
+        userRegisterPage = new UserRegisterWidget();
+        userRegisterPage->setObjectName(QString::fromUtf8("userRegisterPage"));
+        stackedWidget->addWidget(userRegisterPage);
+        userModifyPage = new UserModifyWidget();
+        userModifyPage->setObjectName(QString::fromUtf8("userModifyPage"));
+        stackedWidget->addWidget(userModifyPage);
+        atendencePage = new AttendanceRecordsWidget();
+        atendencePage->setObjectName(QString::fromUtf8("atendencePage"));
+        stackedWidget->addWidget(atendencePage);
+        rechargeDeductionPage = new RechargeAndDeductionWidget();
+        rechargeDeductionPage->setObjectName(QString::fromUtf8("rechargeDeductionPage"));
+        stackedWidget->addWidget(rechargeDeductionPage);
+        serailSetPage = new SerialSetWidget();
+        serailSetPage->setObjectName(QString::fromUtf8("serailSetPage"));
+        stackedWidget->addWidget(serailSetPage);
+        adminSettingsPage = new SetAdminWidge();
+        adminSettingsPage->setObjectName(QString::fromUtf8("adminSettingsPage"));
+        stackedWidget->addWidget(adminSettingsPage);
 
-        gridLayout->addWidget(navTopFrame, 0, 0, 1, 2);
+        gridLayout->addWidget(stackedWidget, 1, 1, 1, 1);
 
         navFrame = new QFrame(SystemManagementPanel);
         navFrame->setObjectName(QString::fromUtf8("navFrame"));
@@ -207,7 +148,7 @@ public:
         navFrame->setFrameShadow(QFrame::Raised);
         verticalLayoutWidget = new QWidget(navFrame);
         verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(0, 0, 301, 831));
+        verticalLayoutWidget->setGeometry(QRect(0, 0, 310, 831));
         navFrameVerticalLayout = new QVBoxLayout(verticalLayoutWidget);
         navFrameVerticalLayout->setObjectName(QString::fromUtf8("navFrameVerticalLayout"));
         navFrameVerticalLayout->setContentsMargins(10, 0, 0, 0);
@@ -519,6 +460,72 @@ public:
 
         verticalLayout->addItem(verticalSpacer_6);
 
+        adminBtnWidget = new QWidget(verticalLayoutWidget);
+        adminBtnWidget->setObjectName(QString::fromUtf8("adminBtnWidget"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(adminBtnWidget->sizePolicy().hasHeightForWidth());
+        adminBtnWidget->setSizePolicy(sizePolicy);
+        adminBtnWidget->setStyleSheet(QString::fromUtf8("QWidget#adminBtnWidget{background:transparent;}"));
+        adminBtnLayout = new QVBoxLayout(adminBtnWidget);
+        adminBtnLayout->setSpacing(0);
+        adminBtnLayout->setObjectName(QString::fromUtf8("adminBtnLayout"));
+        adminBtnLayout->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        navAdminManageLabel = new QLabel(adminBtnWidget);
+        navAdminManageLabel->setObjectName(QString::fromUtf8("navAdminManageLabel"));
+        navAdminManageLabel->setMinimumSize(QSize(44, 44));
+        navAdminManageLabel->setMaximumSize(QSize(48, 48));
+        navAdminManageLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"    background:transparent;\n"
+"}"));
+        navAdminManageLabel->setPixmap(QPixmap(QString::fromUtf8(":/image/manager.png")));
+        navAdminManageLabel->setScaledContents(true);
+
+        horizontalLayout_7->addWidget(navAdminManageLabel);
+
+        navAdminManageButton = new QPushButton(adminBtnWidget);
+        navAdminManageButton->setObjectName(QString::fromUtf8("navAdminManageButton"));
+        navAdminManageButton->setMinimumSize(QSize(0, 44));
+        navAdminManageButton->setMaximumSize(QSize(16777215, 48));
+        navAdminManageButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"    background: transparent;\n"
+"    color: rgb(74, 85, 104);\n"
+"    border: 2px solid qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    border-radius: 6px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    color: #1A3A6B;\n"
+"}\n"
+"QPushButton:checked {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    color: #1A3A6B;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"}"));
+        navAdminManageButton->setCheckable(true);
+        navAdminManageButton->setAutoExclusive(true);
+
+        horizontalLayout_7->addWidget(navAdminManageButton);
+
+
+        adminBtnLayout->addLayout(horizontalLayout_7);
+
+
+        verticalLayout->addWidget(adminBtnWidget);
+
+        verticalSpacer_7 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer_7);
+
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
         navLogoutLabel = new QLabel(verticalLayoutWidget);
@@ -572,35 +579,109 @@ public:
 
         gridLayout->addWidget(navFrame, 1, 0, 1, 1);
 
-        stackedWidget = new QStackedWidget(SystemManagementPanel);
-        stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
-        stackedWidget->setMinimumSize(QSize(1301, 831));
-        stackedWidget->setMaximumSize(QSize(1301, 831));
-        homePage = new HomePageWidget();
-        homePage->setObjectName(QString::fromUtf8("homePage"));
-        stackedWidget->addWidget(homePage);
-        userRegisterPage = new UserRegisterWidget();
-        userRegisterPage->setObjectName(QString::fromUtf8("userRegisterPage"));
-        stackedWidget->addWidget(userRegisterPage);
-        userModifyPage = new UserModifyWidget();
-        userModifyPage->setObjectName(QString::fromUtf8("userModifyPage"));
-        stackedWidget->addWidget(userModifyPage);
-        atendencePage = new AttendanceRecordsWidget();
-        atendencePage->setObjectName(QString::fromUtf8("atendencePage"));
-        stackedWidget->addWidget(atendencePage);
-        rechargeDeductionPage = new RechargeAndDeductionWidget();
-        rechargeDeductionPage->setObjectName(QString::fromUtf8("rechargeDeductionPage"));
-        stackedWidget->addWidget(rechargeDeductionPage);
-        serailSetPage = new SerialSetWidget();
-        serailSetPage->setObjectName(QString::fromUtf8("serailSetPage"));
-        stackedWidget->addWidget(serailSetPage);
+        navTopFrame = new QFrame(SystemManagementPanel);
+        navTopFrame->setObjectName(QString::fromUtf8("navTopFrame"));
+        navTopFrame->setMinimumSize(QSize(0, 71));
+        navTopFrame->setMaximumSize(QSize(16777215, 71));
+        navTopFrame->setStyleSheet(QString::fromUtf8("QFrame{\n"
+"    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
+"    border: none;\n"
+"    border-bottom: 1px solid #E8ECF2;\n"
+"}"));
+        navTopFrame->setFrameShape(QFrame::StyledPanel);
+        navTopFrame->setFrameShadow(QFrame::Raised);
+        serailTextLabel = new QLabel(navTopFrame);
+        serailTextLabel->setObjectName(QString::fromUtf8("serailTextLabel"));
+        serailTextLabel->setGeometry(QRect(1450, 20, 151, 31));
+        serailTextLabel->setMinimumSize(QSize(151, 31));
+        serailTextLabel->setMaximumSize(QSize(151, 31));
+        serailTextLabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
+"    font-size: 15px;\n"
+"    color: rgb(0, 0, 0);\n"
+"    qproperty-alignment: AlignCenter;\n"
+"	font-weight: bold;\n"
+"	background:transparent;\n"
+"}\n"
+""));
+        managerIconLabel = new QLabel(navTopFrame);
+        managerIconLabel->setObjectName(QString::fromUtf8("managerIconLabel"));
+        managerIconLabel->setGeometry(QRect(1, 1, 71, 69));
+        managerIconLabel->setMinimumSize(QSize(71, 0));
+        managerIconLabel->setMaximumSize(QSize(71, 16777215));
+        managerIconLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	border:none;\n"
+"	background:transparent;\n"
+"}"));
+        managerIconLabel->setPixmap(QPixmap(QString::fromUtf8(":/image/manager.png")));
+        managerIconLabel->setScaledContents(true);
+        serilIconlabel = new QLabel(navTopFrame);
+        serilIconlabel->setObjectName(QString::fromUtf8("serilIconlabel"));
+        serilIconlabel->setGeometry(QRect(1430, 20, 30, 30));
+        serilIconlabel->setMinimumSize(QSize(30, 30));
+        serilIconlabel->setMaximumSize(QSize(30, 30));
+        serilIconlabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
+"	border-radius: 15px;\n"
+"}"));
+        serilIconlabel->setPixmap(QPixmap(QString::fromUtf8(":/image/Serail1.png")));
+        serilIconlabel->setScaledContents(true);
+        localTimeLabel = new QLabel(navTopFrame);
+        localTimeLabel->setObjectName(QString::fromUtf8("localTimeLabel"));
+        localTimeLabel->setGeometry(QRect(1011, 1, 128, 69));
+        localTimeLabel->setMinimumSize(QSize(128, 41));
+        localTimeLabel->setMaximumSize(QSize(128, 128));
+        localTimeLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	background:transparent;\n"
+"}"));
+        managerLabel = new QLabel(navTopFrame);
+        managerLabel->setObjectName(QString::fromUtf8("managerLabel"));
+        managerLabel->setGeometry(QRect(522, 15, 88, 41));
+        managerLabel->setMinimumSize(QSize(0, 41));
+        managerLabel->setMaximumSize(QSize(16777215, 41));
+        managerLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	border:none;\n"
+"	font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    color: #1A3A6B;\n"
+"    qproperty-alignment: AlignCenter;\n"
+"	background:transparent;\n"
+"}"));
+        managerTitleLabel = new QLabel(navTopFrame);
+        managerTitleLabel->setObjectName(QString::fromUtf8("managerTitleLabel"));
+        managerTitleLabel->setGeometry(QRect(90, 0, 160, 71));
+        managerTitleLabel->setMinimumSize(QSize(0, 71));
+        managerTitleLabel->setMaximumSize(QSize(16777215, 71));
+        managerTitleLabel->setStyleSheet(QString::fromUtf8("QLabel{\n"
+"	border:none;\n"
+"    font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    color: #1A3A6B;\n"
+"    qproperty-alignment: AlignCenter;\n"
+"	background:transparent;\n"
+"}"));
+        managerNameLabel = new QLabel(navTopFrame);
+        managerNameLabel->setObjectName(QString::fromUtf8("managerNameLabel"));
+        managerNameLabel->setGeometry(QRect(619, 15, 110, 41));
+        managerNameLabel->setMinimumSize(QSize(0, 41));
+        managerNameLabel->setMaximumSize(QSize(16777215, 41));
+        managerNameLabel->setStyleSheet(QString::fromUtf8("QLabel\n"
+"{\n"
+"	border:none;\n"
+"	font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    color: #1A3A6B;\n"
+"    qproperty-alignment: AlignCenter;\n"
+"	background:transparent;\n"
+"}"));
 
-        gridLayout->addWidget(stackedWidget, 1, 1, 1, 1);
+        gridLayout->addWidget(navTopFrame, 0, 0, 1, 2);
 
 
         retranslateUi(SystemManagementPanel);
 
-        stackedWidget->setCurrentIndex(5);
+        stackedWidget->setCurrentIndex(6);
 
 
         QMetaObject::connectSlotsByName(SystemManagementPanel);
@@ -608,14 +689,7 @@ public:
 
     void retranslateUi(QWidget *SystemManagementPanel)
     {
-        SystemManagementPanel->setWindowTitle(QApplication::translate("SystemManagementPanel", "Form", nullptr));
-        serailTextLabel->setText(QApplication::translate("SystemManagementPanel", "\350\256\276\345\244\207COMn\345\267\262\350\277\236\346\216\245", nullptr));
-        managerIconLabel->setText(QString());
-        serilIconlabel->setText(QString());
-        localTimeLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><br/></p></body></html>", nullptr));
-        managerLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\357\274\232</span></p></body></html>", nullptr));
-        managerTitleLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:16pt;\">\347\256\241\347\220\206\345\221\230\351\235\242\346\235\277</span></p></body></html>", nullptr));
-        managerNameLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\345\247\223\345\220\215</span></p></body></html>", nullptr));
+        SystemManagementPanel->setWindowTitle(QApplication::translate("SystemManagementPanel", "\347\256\241\347\220\206\345\221\230\351\235\242\346\235\277", nullptr));
         navHomeLabel->setText(QString());
         navHomeButton->setText(QApplication::translate("SystemManagementPanel", "\351\246\226\351\241\265", nullptr));
         navRegisterLabel->setText(QString());
@@ -628,8 +702,17 @@ public:
         rachargeButton->setText(QApplication::translate("SystemManagementPanel", "\345\205\205\345\200\274\346\211\243\346\254\276", nullptr));
         navSerialLabel->setText(QString());
         navSerialButton->setText(QApplication::translate("SystemManagementPanel", "\344\270\262\345\217\243\350\256\276\347\275\256", nullptr));
+        navAdminManageLabel->setText(QString());
+        navAdminManageButton->setText(QApplication::translate("SystemManagementPanel", "\347\256\241\347\220\206\345\221\230\350\256\276\347\275\256", nullptr));
         navLogoutLabel->setText(QString());
         navLogoutButton->setText(QApplication::translate("SystemManagementPanel", "\351\200\200\345\207\272\347\231\273\345\275\225", nullptr));
+        serailTextLabel->setText(QApplication::translate("SystemManagementPanel", "\350\256\276\345\244\207COMn\345\267\262\350\277\236\346\216\245", nullptr));
+        managerIconLabel->setText(QString());
+        serilIconlabel->setText(QString());
+        localTimeLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><br/></p></body></html>", nullptr));
+        managerLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\357\274\232</span></p></body></html>", nullptr));
+        managerTitleLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:16pt;\">\347\256\241\347\220\206\345\221\230\351\235\242\346\235\277</span></p></body></html>", nullptr));
+        managerNameLabel->setText(QApplication::translate("SystemManagementPanel", "<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">\347\256\241\347\220\206\345\221\230\345\247\223\345\220\215</span></p></body></html>", nullptr));
     } // retranslateUi
 
 };

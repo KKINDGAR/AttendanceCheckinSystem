@@ -10,6 +10,7 @@
 #define UI_REGISTERWIDGET_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
@@ -51,6 +52,9 @@ public:
         if (RegisterWidget->objectName().isEmpty())
             RegisterWidget->setObjectName(QString::fromUtf8("RegisterWidget"));
         RegisterWidget->resize(456, 606);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/image/manager.png"), QSize(), QIcon::Normal, QIcon::Off);
+        RegisterWidget->setWindowIcon(icon);
         RegisterWidget->setStyleSheet(QString::fromUtf8("QWidget#RegisterWidget{\n"
 "    background-image: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
 "	font-family: \"Microsoft YaHei\";\n"
@@ -306,7 +310,7 @@ public:
 
     void retranslateUi(QWidget *RegisterWidget)
     {
-        RegisterWidget->setWindowTitle(QApplication::translate("RegisterWidget", "Form", nullptr));
+        RegisterWidget->setWindowTitle(QApplication::translate("RegisterWidget", "\347\256\241\347\220\206\345\221\230\346\263\250\345\206\214", nullptr));
         loginLabel->setText(QApplication::translate("RegisterWidget", "<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:600; color:#1a3a6b;\">\347\256\241\347\220\206\345\221\230\346\263\250\345\206\214</span></p></body></html>", nullptr));
         userRegisterEdit->setPlaceholderText(QApplication::translate("RegisterWidget", "\350\257\267\350\276\223\345\205\245\347\224\250\346\210\267\345\220\215", nullptr));
         passwordRegisterEdit->setPlaceholderText(QApplication::translate("RegisterWidget", "\350\257\267\350\276\223\345\205\245\345\257\206\347\240\201", nullptr));

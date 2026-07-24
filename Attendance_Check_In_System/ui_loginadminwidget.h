@@ -10,6 +10,7 @@
 #define UI_LOGINADMINWIDGET_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -17,7 +18,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -34,24 +34,22 @@ public:
     QFrame *readCardFrame;
     QLabel *cardLabel;
     QLabel *cardIconLabel;
-    QWidget *layoutWidget;
+    QWidget *loginFormWidget;
     QVBoxLayout *verticalLayout_2;
     QLineEdit *userEdit;
     QLineEdit *passwordEdit;
     QHBoxLayout *horizontalLayout_2;
     QPushButton *loginButton;
     QPushButton *cancelButton;
-    QWidget *layoutWidget1;
-    QHBoxLayout *horizontalLayout;
-    QSpacerItem *horizontalSpacer;
-    QLabel *contentLabel;
-    QPushButton *backRegisterButton;
 
     void setupUi(QWidget *LoginAdminWidget)
     {
         if (LoginAdminWidget->objectName().isEmpty())
             LoginAdminWidget->setObjectName(QString::fromUtf8("LoginAdminWidget"));
         LoginAdminWidget->resize(456, 606);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/image/manager.png"), QSize(), QIcon::Normal, QIcon::Off);
+        LoginAdminWidget->setWindowIcon(icon);
         LoginAdminWidget->setStyleSheet(QString::fromUtf8("QWidget#LoginAdminWidget{\n"
 "    background:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));\n"
 "	font-family: \"Microsoft YaHei\";\n"
@@ -118,15 +116,15 @@ public:
 
         verticalLayout->addWidget(readCardFrame);
 
-        layoutWidget = new QWidget(loginFrame);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(20, 270, 391, 231));
-        verticalLayout_2 = new QVBoxLayout(layoutWidget);
+        loginFormWidget = new QWidget(loginFrame);
+        loginFormWidget->setObjectName(QString::fromUtf8("loginFormWidget"));
+        loginFormWidget->setGeometry(QRect(20, 270, 391, 231));
+        verticalLayout_2 = new QVBoxLayout(loginFormWidget);
         verticalLayout_2->setSpacing(15);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(15, 15, 15, 15);
-        userEdit = new QLineEdit(layoutWidget);
+        userEdit = new QLineEdit(loginFormWidget);
         userEdit->setObjectName(QString::fromUtf8("userEdit"));
         userEdit->setMinimumSize(QSize(0, 40));
         userEdit->setStyleSheet(QString::fromUtf8("QLineEdit{\n"
@@ -146,7 +144,7 @@ public:
 
         verticalLayout_2->addWidget(userEdit);
 
-        passwordEdit = new QLineEdit(layoutWidget);
+        passwordEdit = new QLineEdit(loginFormWidget);
         passwordEdit->setObjectName(QString::fromUtf8("passwordEdit"));
         passwordEdit->setMinimumSize(QSize(0, 40));
         passwordEdit->setMaximumSize(QSize(16777215, 40));
@@ -172,7 +170,7 @@ public:
         horizontalLayout_2->setSpacing(15);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         horizontalLayout_2->setContentsMargins(15, 15, 15, 15);
-        loginButton = new QPushButton(layoutWidget);
+        loginButton = new QPushButton(loginFormWidget);
         loginButton->setObjectName(QString::fromUtf8("loginButton"));
         loginButton->setMinimumSize(QSize(0, 40));
         loginButton->setMaximumSize(QSize(16777215, 40));
@@ -198,7 +196,7 @@ public:
 
         horizontalLayout_2->addWidget(loginButton);
 
-        cancelButton = new QPushButton(layoutWidget);
+        cancelButton = new QPushButton(loginFormWidget);
         cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
         cancelButton->setMinimumSize(QSize(0, 40));
         cancelButton->setMaximumSize(QSize(16777215, 40));
@@ -227,49 +225,6 @@ public:
 
         verticalLayout_2->addLayout(horizontalLayout_2);
 
-        layoutWidget1 = new QWidget(loginFrame);
-        layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(180, 520, 211, 26));
-        horizontalLayout = new QHBoxLayout(layoutWidget1);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
-        contentLabel = new QLabel(layoutWidget1);
-        contentLabel->setObjectName(QString::fromUtf8("contentLabel"));
-        contentLabel->setMinimumSize(QSize(0, 24));
-        contentLabel->setMaximumSize(QSize(16777215, 24));
-        contentLabel->setStyleSheet(QString::fromUtf8("QLabel#contentLabel{\n"
-"    font-size: 13px;\n"
-"    color: #666666;\n"
-"    qproperty-alignment: AlignCenter;\n"
-"}\n"
-""));
-
-        horizontalLayout->addWidget(contentLabel);
-
-        backRegisterButton = new QPushButton(layoutWidget1);
-        backRegisterButton->setObjectName(QString::fromUtf8("backRegisterButton"));
-        backRegisterButton->setMinimumSize(QSize(0, 24));
-        backRegisterButton->setMaximumSize(QSize(16777215, 24));
-        backRegisterButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
-"{\n"
-"	font-size: 13px;\n"
-"    color: #666666;\n"
-"	border:none;\n"
-"	background:transparent;\n"
-"	color:#55aaff;\n"
-"}\n"
-"QPushButton#backRegisterButton:hover{\n"
-"    color: qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 #50a3ff, stop:1 #3086fa);\n"
-"}"));
-
-        horizontalLayout->addWidget(backRegisterButton);
-
 
         gridLayout->addWidget(loginFrame, 0, 0, 1, 1);
 
@@ -289,8 +244,6 @@ public:
         passwordEdit->setPlaceholderText(QApplication::translate("LoginAdminWidget", "\350\257\267\350\276\223\345\205\245\345\257\206\347\240\201", nullptr));
         loginButton->setText(QApplication::translate("LoginAdminWidget", "\347\231\273\345\275\225", nullptr));
         cancelButton->setText(QApplication::translate("LoginAdminWidget", "\345\217\226\346\266\210", nullptr));
-        contentLabel->setText(QApplication::translate("LoginAdminWidget", "<html><head/><body><p align=\"right\">\350\277\230\346\262\241\346\234\211\350\264\246\345\217\267\357\274\237</p></body></html>", nullptr));
-        backRegisterButton->setText(QApplication::translate("LoginAdminWidget", "\347\253\213\345\215\263\346\263\250\345\206\214", nullptr));
     } // retranslateUi
 
 };

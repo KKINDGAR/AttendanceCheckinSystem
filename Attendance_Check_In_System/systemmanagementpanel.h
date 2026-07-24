@@ -8,10 +8,13 @@
 #include "usermodifywidget.h"
 #include "attendancerecordswidget.h"
 #include "rechargeanddeductionwidget.h"
+#include "setadminwidge.h"
 //管理员控制面板类
 namespace Ui {
 class SystemManagementPanel;
 }
+
+class RegisterWidget;
 
 class SystemManagementPanel : public QWidget
 {
@@ -28,6 +31,8 @@ public:
     UserModifyWidget* getUserModifyPage();         // 获取员工注册页面指针(供Widget转发cardParsedToModify)
     AttendanceRecordsWidget* getAttendancePage();  // 获取考勤查询页面指针(供widget转发cardParsedAttendance)
     RechargeAndDeductionWidget* getRechargePage(); // 获取充值扣款页面指针(供widget转发cardParsedRecharge)
+    SetAdminWidge* getAdminSettingsPage();         // 获取管理员设置页指针(供widget传递RegisterWidget)
+    void setRegisterWidget(RegisterWidget *regis);  // 传递RegisterWidget给管理员设置页
 private slots:
     void on_navHomeButton_clicked();
 
@@ -43,6 +48,8 @@ private slots:
 
     void on_navLogoutButton_clicked();
 
+    void on_navAdminManageButton_clicked();
+
     void onClockTick();  // 时钟刷新
 public slots:
     void ondataReceived(const QString &cardNumber);  // 接收Widget转发的解析后串口数据
@@ -53,6 +60,7 @@ private:
     QTimer *m_clockTimer;    // 时钟定时器
     QSerialPort *m_serial;   // 全局串口指针
     QString m_cardNumber;    //卡号成员
+    QString m_adminName;     // 当前登录的管理员姓名（用于权限判断）
 
     void updateSerialStatus();  //更新串口状态
 };

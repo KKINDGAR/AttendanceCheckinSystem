@@ -36,7 +36,8 @@ SOURCES += \
     attendancerecordswidget.cpp \
     serialsetwidget.cpp \
     rechargeanddeductionwidget.cpp \
-    loginadminwidget.cpp
+    loginadminwidget.cpp \
+    setadminwidge.cpp
 
 HEADERS += \
         widget.h \
@@ -49,7 +50,8 @@ HEADERS += \
     attendancerecordswidget.h \
     serialsetwidget.h \
     rechargeanddeductionwidget.h \
-    loginadminwidget.h
+    loginadminwidget.h \
+    setadminwidge.h
 
 # 人脸识别模块
 SOURCES += face/faceengine.cpp face/facecapture.cpp face/facedetector.cpp
@@ -65,7 +67,8 @@ FORMS += \
     attendancerecordswidget.ui \
     serialsetwidget.ui \
     rechargeanddeductionwidget.ui \
-    loginadminwidget.ui
+    loginadminwidget.ui \
+    setadminwidge.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

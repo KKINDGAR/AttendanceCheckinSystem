@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>管理员登录</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="src.qrc">
+    <normaloff>:/image/manager.png</normaloff>:/image/manager.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QWidget#LoginAdminWidget{
     background:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(100, 118, 135, 217), stop:1 rgba(255, 255, 255, 255));
@@ -154,7 +158,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="loginFormWidget">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -344,90 +348,6 @@ QPushButton:pressed {
           </widget>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>520</y>
-        <width>211</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="contentLabel">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#contentLabel{
-    font-size: 13px;
-    color: #666666;
-    qproperty-alignment: AlignCenter;
-}
-</string>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;还没有账号？&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="backRegisterButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton
-{
-	font-size: 13px;
-    color: #666666;
-	border:none;
-	background:transparent;
-	color:#55aaff;
-}
-QPushButton#backRegisterButton:hover{
-    color: qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 #50a3ff, stop:1 #3086fa);
-}</string>
-         </property>
-         <property name="text">
-          <string>立即注册</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

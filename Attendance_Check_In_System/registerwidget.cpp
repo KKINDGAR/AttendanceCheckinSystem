@@ -61,7 +61,7 @@ void RegisterWidget::on_submitButton_clicked()
     {
         db->insertData(cardNumber, name, password);
     }
-    QMessageBox::information(this,"成功","注册成功，即将跳转登陆界面");
+    QMessageBox::information(this,"成功","注册成功，即将返回管理员\n设置界面");
     ui->userRegisterEdit->clear();
     ui->passwordRegisterEdit->clear();
     ui->passwordComfirEdit->clear();

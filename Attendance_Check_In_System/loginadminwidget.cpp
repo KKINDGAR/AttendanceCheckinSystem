@@ -6,8 +6,7 @@ LoginAdminWidget::LoginAdminWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LoginAdminWidget),
     m_serial(nullptr),
-    m_smp(nullptr),
-    m_regis(nullptr)
+    m_smp(nullptr)
 {
     ui->setupUi(this);
 }
@@ -25,11 +24,6 @@ void LoginAdminWidget::setSerialPort(QSerialPort *serial)
 void LoginAdminWidget::setSMP(SystemManagementPanel *smp)
 {
     m_smp = smp;
-}
-
-void LoginAdminWidget::setRegisterWidget(RegisterWidget *regis)
-{
-    m_regis = regis;
 }
 
 void LoginAdminWidget::on_loginButton_clicked()
@@ -101,11 +95,3 @@ void LoginAdminWidget::on_cancelButton_clicked()
     emit backToCheckIn();
 }
 
-void LoginAdminWidget::on_backRegisterButton_clicked()
-{
-    if(m_regis)
-    {
-        this->hide();
-        m_regis->show();
-    }
-}

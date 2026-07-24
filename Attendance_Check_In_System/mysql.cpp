@@ -20,11 +20,11 @@ MySql::MySql(QString dbName, QObject *parent) : QObject (parent)
         // 启用WAL模式：允许多线程并发读写，避免database is locked
         QSqlQuery q(db);
         q.exec("PRAGMA journal_mode=WAL");
-        qDebug()<<"OK"<<endl;
+//        qDebug()<<"OK"<<endl;
     }
     else
     {
-        qDebug()<<"error:"<<db.lastError().text()<<endl;
+//        qDebug()<<"error:"<<db.lastError().text()<<endl;
     }
 }
 
@@ -45,11 +45,11 @@ void MySql::creatTable()
               "name TEXT NOT NULL)";
     if(query.exec(sql))
     {
-        qDebug()<<"admin is ok"<<endl;
+//        qDebug()<<"admin is ok"<<endl;
     }
     else
     {
-        qDebug()<<"admin is error:"<<query.lastError().text()<<endl;
+//        qDebug()<<"admin is error:"<<query.lastError().text()<<endl;
     }
 
     // 员工表
@@ -64,11 +64,11 @@ void MySql::creatTable()
           ")";
     if(query.exec(sql))
     {
-        qDebug()<<"user is ok"<<endl;
+//        qDebug()<<"user is ok"<<endl;
     }
     else
     {
-        qDebug()<<"user is error:"<<query.lastError().text()<<endl;
+//        qDebug()<<"user is error:"<<query.lastError().text()<<endl;
     }
     // 兼容旧库：如果表已存在但没有 faceFeature 列，则追加
     query.exec("ALTER TABLE user ADD COLUMN faceFeature BLOB");
@@ -85,11 +85,11 @@ void MySql::creatTable()
           ")";
     if(query.exec(sql))
     {
-        qDebug()<<"card is ok"<<endl;
+//        qDebug()<<"card is ok"<<endl;
     }
     else
     {
-        qDebug()<<"card is error:"<<query.lastError().text()<<endl;
+//        qDebug()<<"card is error:"<<query.lastError().text()<<endl;
     }
 
     // 充值扣款记录表
@@ -104,14 +104,21 @@ void MySql::creatTable()
           ")";
     if(query.exec(sql))
     {
-        qDebug()<<"transaction is ok"<<endl;
+//        qDebug()<<"transaction is ok"<<endl;
     }
     else
     {
-        qDebug()<<"transaction is error:"<<query.lastError().text()<<endl;
+//        qDebug()<<"transaction is error:"<<query.lastError().text()<<endl;
     }
     // 兼容旧库：如果 records 表已存在但没有 remark 列，则追加
     query.exec("ALTER TABLE records ADD COLUMN remark TEXT DEFAULT ''");
+
+    // 超级管理员初始化：首次建表时自动插入默认 root 账户
+    QSqlQuery countQ;
+    if (countQ.exec("SELECT COUNT(*) FROM admin") && countQ.next() && countQ.value(0).toInt() == 0) {
+        insertData("c2-23-d6-e9", "root", "123456");
+//        qDebug() << "Super admin initialized: root/123456";
+    }
 }
 
 
@@ -125,11 +132,11 @@ void MySql::insertData(QString adminCard, QString name, QString pwd)
     query.bindValue(":name",name);
     if(query.exec())
     {
-        qDebug()<<"执行插入语句成功,新纪录的ID:"<<query.lastInsertId().toInt()<<endl;
+//        qDebug()<<"执行插入语句成功,新纪录的ID:"<<query.lastInsertId().toInt()<<endl;
     }
     else
     {
-        qDebug()<<"执行插入语句失败,error:"<<query.lastError().text()<<endl;
+//        qDebug()<<"执行插入语句失败,error:"<<query.lastError().text()<<endl;
     }
 }
 
@@ -141,10 +148,10 @@ bool MySql::adminLoginByCard(QString adminCard)
     query.bindValue(":adminCard",adminCard);
     if(query.exec() && query.next())
     {
-        qDebug()<<"刷卡登录成功"<<endl;
+//        qDebug()<<"刷卡登录成功"<<endl;
         return true;
     }
-    qDebug()<<"刷卡登录失败,卡号不存在"<<endl;
+//    qDebug()<<"刷卡登录失败,卡号不存在"<<endl;
     return false;
 }
 
@@ -157,11 +164,11 @@ bool MySql::adminIsExits(QString adminCard, QString pwd)
     query.bindValue(":pwd",pwd);
     if(query.exec())
     {
-        qDebug()<<"执行查询语句成功"<<endl;
+//        qDebug()<<"执行查询语句成功"<<endl;
     }
     else
     {
-        qDebug()<<"执行查询语句失败,error:"<<endl;
+//        qDebug()<<"执行查询语句失败,error:"<<endl;
     }
 
     //遍历查询结果（是否存在adminCard和pwd）
@@ -181,10 +188,10 @@ bool MySql::adminLoginByName(QString name, QString pwd)
     query.bindValue(":pwd",pwd);
     if(query.exec() && query.next())
     {
-        qDebug()<<"姓名密码登录成功"<<endl;
+//        qDebug()<<"姓名密码登录成功"<<endl;
         return true;
     }
-    qDebug()<<"姓名密码登录失败"<<endl;
+//    qDebug()<<"姓名密码登录失败"<<endl;
     return false;
 }
 
@@ -211,10 +218,10 @@ bool MySql::updateAdminPwd(QString adminCard, QString newPwd)
     query.bindValue(":adminCard",adminCard);
     if(query.exec())
     {
-        qDebug()<<"管理员密码修改成功"<<endl;
+//        qDebug()<<"管理员密码修改成功"<<endl;
         return true;
     }
-    qDebug()<<"管理员密码修改失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"管理员密码修改失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -226,10 +233,10 @@ bool MySql::deleteAdmin(QString adminCard)
     query.bindValue(":adminCard",adminCard);
     if(query.exec())
     {
-        qDebug()<<"管理员删除成功"<<endl;
+//        qDebug()<<"管理员删除成功"<<endl;
         return true;
     }
-    qDebug()<<"管理员删除失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"管理员删除失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -246,10 +253,10 @@ bool MySql::insertUser(QString card, QString name, int age, QString sex, QString
     query.bindValue(":registerTime",registerTime);
     if(query.exec())
     {
-        qDebug()<<"员工注册成功"<<endl;
+//        qDebug()<<"员工注册成功"<<endl;
         return true;
     }
-    qDebug()<<"员工注册失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"员工注册失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -264,10 +271,10 @@ bool MySql::updateUser(QString card, QString name, int age, QString sex)
     query.bindValue(":card",card);
     if(query.exec())
     {
-        qDebug()<<"员工信息修改成功"<<endl;
+//        qDebug()<<"员工信息修改成功"<<endl;
         return true;
     }
-    qDebug()<<"员工信息修改失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"员工信息修改失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -279,10 +286,10 @@ bool MySql::deleteUser(QString card)
     query.bindValue(":card",card);
     if(query.exec())
     {
-        qDebug()<<"员工删除成功"<<endl;
+//        qDebug()<<"员工删除成功"<<endl;
         return true;
     }
-    qDebug()<<"员工删除失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"员工删除失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -363,10 +370,10 @@ bool MySql::updateUserBalance(QString card, double newBalance)
     query.bindValue(":card",card);
     if(query.exec())
     {
-        qDebug()<<"余额更新成功"<<endl;
+//        qDebug()<<"余额更新成功"<<endl;
         return true;
     }
-    qDebug()<<"余额更新失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"余额更新失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -385,10 +392,10 @@ bool MySql::checkIn(QString card, QString name, QString date, QString time)
     query.bindValue(":st",status);
     if(query.exec())
     {
-        qDebug()<<"签到成功("<<status<<")"<<endl;
+//        qDebug()<<"签到成功("<<status<<")"<<endl;
         return true;
     }
-    qDebug()<<"签到失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"签到失败:"<<query.lastError().text()<<endl;
     return false;
 }
 
@@ -409,10 +416,10 @@ bool MySql::checkOut(QString card, QString date, QString time)
     query.bindValue(":date",date);
     if(query.exec() && query.numRowsAffected() > 0)
     {
-        qDebug()<<"签退成功("<<st<<")"<<endl;
+//        qDebug()<<"签退成功("<<st<<")"<<endl;
         return true;
     }
-    qDebug()<<"签退失败(无签到记录或已签退):"<<endl;
+//    qDebug()<<"签退失败(无签到记录或已签退):"<<endl;
     return false;
 }
 
@@ -454,10 +461,10 @@ bool MySql::addTransaction(QString card, QString name, QString type, double amou
     query.bindValue(":remark",remark);
     if(query.exec())
     {
-        qDebug()<<"交易记录添加成功"<<endl;
+//        qDebug()<<"交易记录添加成功"<<endl;
         return true;
     }
-    qDebug()<<"交易记录添加失败:"<<query.lastError().text()<<endl;
+//    qDebug()<<"交易记录添加失败:"<<query.lastError().text()<<endl;
     return false;
 }
 

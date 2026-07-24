@@ -18,6 +18,7 @@ SystemManagementPanel::SystemManagementPanel(QWidget *parent) :
         case 2: ui->navModifyButton->setChecked(true);     break;
         case 3: ui->navRecordsButton->setChecked(true);    break;
         case 4: ui->rachargeButton->setChecked(true);      break;
+        case 6: ui->navAdminManageButton->setChecked(true); break;
         }
     });
     m_clockTimer = new QTimer(this);
@@ -60,6 +61,17 @@ void SystemManagementPanel::on_navSerialButton_clicked()
     ui->stackedWidget->setCurrentIndex(5);
 }
 
+void SystemManagementPanel::on_navAdminManageButton_clicked()
+{
+    //非root 用户拒绝进入
+    if (m_adminName != "root") {
+        QMessageBox::warning(this, "权限不足",
+            "只有超级管理员(root)才能进入管理员设置页面");
+        return;
+    }
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
 UserRegisterWidget* SystemManagementPanel::getUserRegisterPage()
 {
     return qobject_cast<UserRegisterWidget*>(ui->userRegisterPage);
@@ -85,6 +97,17 @@ RechargeAndDeductionWidget *SystemManagementPanel::getRechargePage()
     return qobject_cast<RechargeAndDeductionWidget*>(ui->rechargeDeductionPage);
 }
 
+SetAdminWidge* SystemManagementPanel::getAdminSettingsPage()
+{
+    return qobject_cast<SetAdminWidge*>(ui->adminSettingsPage);
+}
+
+void SystemManagementPanel::setRegisterWidget(RegisterWidget *regis)
+{
+    qobject_cast<SetAdminWidge*>(ui->adminSettingsPage)->setRegisterWidget(regis);
+    qobject_cast<SetAdminWidge*>(ui->adminSettingsPage)->setSystemManagementPanel(this);
+}
+
 void SystemManagementPanel::setSerial(QSerialPort *serial)
 {
     m_serial = serial;
@@ -95,6 +118,7 @@ void SystemManagementPanel::setSerial(QSerialPort *serial)
     qobject_cast<AttendanceRecordsWidget*>(ui->atendencePage)->setSerial(serial);
     qobject_cast<SerialSetWidget*>(ui->serailSetPage)->setSerial(serial);
     qobject_cast<RechargeAndDeductionWidget*>(ui->rechargeDeductionPage)->setSerial(serial);
+    qobject_cast<SetAdminWidge*>(ui->adminSettingsPage)->setSerial(serial);
 }
 
 void SystemManagementPanel::setAdminCard(const QString &card)
@@ -102,8 +126,23 @@ void SystemManagementPanel::setAdminCard(const QString &card)
     m_cardNumber = card;
     MySql *db = MySql::getMySql();
     QString name;
-    if(db->getAdminName(card, name))
-    {
+
+    // 先按卡号查，再按用户名查（兼容用户名登录时 card 参数实际是用户名的情况）
+    bool found = db->getAdminName(card, name);
+    if (!found) {
+        QSqlQuery q;
+        q.prepare("SELECT adminCard, name FROM admin WHERE name = ?");
+        q.addBindValue(card);
+        if (q.exec() && q.next()) {
+            m_cardNumber = q.value(0).toString();  // 修正为真实卡号
+            name = q.value(1).toString();
+            found = true;
+        }
+    }
+
+    if (found) {
+        m_adminName = name;  // 存储管理员姓名，用于权限判断
+
         ui->managerNameLabel->setStyleSheet("QLabel"
         "{"
             "border:none;"
@@ -123,6 +162,10 @@ void SystemManagementPanel::setAdminCard(const QString &card)
             "background:transparent;"
         "}");
         ui->managerNameLabel->setText(name);
+
+        // 权限门控：仅超级管理员 root 可见"管理员设置"按钮行
+        // 弹簧(verticalSpacer_6/7)始终保留在verticalLayout中，隐藏按钮后仍然参与空间分配
+        ui->adminBtnWidget->setVisible(name == "root");
     }
 }
 
@@ -155,6 +198,9 @@ void SystemManagementPanel::ondataReceived(const QString &cardNumber)
         return;
     }
     m_cardNumber = cardNumber;
+
+    // 转发给管理员设置页（方便修改管理员信息时刷卡录入）
+    qobject_cast<SetAdminWidge*>(ui->adminSettingsPage)->onCardReceived(cardNumber);
 }
 
 void SystemManagementPanel::updateSerialStatus()
@@ -172,3 +218,4 @@ void SystemManagementPanel::updateSerialStatus()
         ui->serailTextLabel->setText("串口已断开");
     }
 }
+

@@ -36,5 +36,6 @@
         <file>image/register_fail_empty_fields.wav</file>
         <file>image/serailConnect.png</file>
         <file>image/WindowIcon.png</file>
+        <file>image/adminmanage.png</file>
     </qresource>
 </RCC>

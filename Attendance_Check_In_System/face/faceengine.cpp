@@ -46,10 +46,10 @@ bool FaceEngine::init(const std::string &modelPath)
                             seeta::ModelSetting::CPU, 0));
 
     if (!d->detector || !d->landmarker || !d->recognizer) {
-        qDebug() << "FaceEngine 初始化失败";
+//        qDebug() << "FaceEngine 初始化失败";
         return false;
     }
-    qDebug() << "FaceEngine 初始化成功";
+//    qDebug() << "FaceEngine 初始化成功";
     return true;
 }
 
