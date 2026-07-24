@@ -25,22 +25,22 @@ void FaceDetector::processFrame(const QImage &image)
         if (s_dbReady) {
             QSqlQuery q(db); q.exec("PRAGMA journal_mode=WAL");
         }
-//        qDebug() << "[Worker] DB连接:" << (s_dbReady ? "成功" : "失败");
+qDebug() << "[Worker] DB连接:" << (s_dbReady ? "成功" : "失败");
     }
     if (!s_dbReady) return;
 
     static int procCount = 0;
-//    qDebug() << "[Worker] 处理帧" << ++procCount << "尺寸:" << image.width() << "x" << image.height();
+qDebug() << "[Worker] 处理帧" << ++procCount << "尺寸:" << image.width() << "x" << image.height();
 
     std::vector<float> feat;
     QRect faceRect;
     if (!FaceEngine::instance()->detectFace(image, feat, faceRect)) {
-//        qDebug() << "[Worker] 未检测到人脸";
+qDebug() << "[Worker] 未检测到人脸";
         emit noFace();
         return;
     }
 
-//    qDebug() << "[Worker] 检测到人脸:" << faceRect;
+qDebug() << "[Worker] 检测到人脸:" << faceRect;
     emit faceDetected(image, faceRect);
 
     // 查人脸库
@@ -59,7 +59,7 @@ void FaceDetector::processFrame(const QImage &image)
         }
     }
 
-//    qDebug() << "[Worker] 人脸库:" << users.size() << "条";
+qDebug() << "[Worker] 人脸库:" << users.size() << "条";
 
     if (users.empty()) {
         emit noUsers();
@@ -75,7 +75,7 @@ void FaceDetector::processFrame(const QImage &image)
         if (s > bestScore) { bestScore = s; bestCard = std::get<0>(u); bestName = std::get<1>(u); }
     }
 
-//    qDebug() << "[Worker] 最佳:" << bestName << bestScore;
+qDebug() << "[Worker] 最佳:" << bestName << bestScore;
 
     if (bestScore >= 0.75f)
         emit matchResult(bestCard, bestName, bestScore);

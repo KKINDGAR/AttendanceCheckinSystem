@@ -33,31 +33,37 @@ SystemManagementPanel::~SystemManagementPanel()
 
 void SystemManagementPanel::on_navHomeButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(0);
 }
 
 void SystemManagementPanel::on_navRegisterButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(1);
 }
 
 void SystemManagementPanel::on_navModifyButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(2);
 }
 
 void SystemManagementPanel::on_navRecordsButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(3);
 }
 
 void SystemManagementPanel::on_rachargeButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(4);
 }
 
 void SystemManagementPanel::on_navSerialButton_clicked()
 {
+    ui->navAdminManageButton->setChecked(false);
     ui->stackedWidget->setCurrentIndex(5);
 }
 
@@ -67,8 +73,17 @@ void SystemManagementPanel::on_navAdminManageButton_clicked()
     if (m_adminName != "root") {
         QMessageBox::warning(this, "权限不足",
             "只有超级管理员(root)才能进入管理员设置页面");
+        ui->navAdminManageButton->setChecked(false);
         return;
     }
+    // 显式互斥：管理员设置按钮与其他按钮不同父，autoExclusive 不生效
+    ui->navHomeButton->setChecked(false);
+    ui->navRegisterButton->setChecked(false);
+    ui->navModifyButton->setChecked(false);
+    ui->navRecordsButton->setChecked(false);
+    ui->rachargeButton->setChecked(false);
+    ui->navSerialButton->setChecked(false);
+    ui->navAdminManageButton->setChecked(true);
     ui->stackedWidget->setCurrentIndex(6);
 }
 

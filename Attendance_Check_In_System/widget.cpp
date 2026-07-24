@@ -91,13 +91,13 @@ Widget::Widget(QWidget *parent) :
 
     //初始化人脸识别引擎
 #ifdef Q_OS_WIN
-//    qDebug() << "[人脸] 模型路径: D:/SeetaFace6_Windows/models";
+qDebug() << "[人脸] 模型路径: D:/SeetaFace6_Windows/models";
     bool initOk = FaceEngine::instance()->init("D:/SeetaFace6_Windows/models");
 #else
-//    qDebug() << "[人脸] 模型路径: /home/zwt/opt/SeetaFace6/models";
+qDebug() << "[人脸] 模型路径: /home/zwt/opt/SeetaFace6/models";
     bool initOk = FaceEngine::instance()->init("/home/zwt/opt/SeetaFace6/models");
 #endif
-//    qDebug() << "[人脸] FaceEngine初始化:" << (initOk ? "成功" : "失败");
+qDebug() << "[人脸] FaceEngine初始化:" << (initOk ? "成功" : "失败");
 
     // 创建人脸检测工作线程（所有重活在此线程执行，不阻塞UI）
     m_faceThread = new QThread(this);
@@ -195,7 +195,7 @@ void Widget::onCardTimeout()
         }
     }
     if(cardNumber.isEmpty()) return;
-//    qDebug() << "解析到卡号:" << cardNumber;
+qDebug() << "解析到卡号:" << cardNumber;
 
     if(this->isVisible()){
     onCardScanned(cardNumber);
@@ -264,7 +264,7 @@ void Widget::tryAutoOpenSerial()
     QString port   = settings.value("port", "").toString();
     if(port.isEmpty())
     {
-//        qDebug() << "首次启动，无串口配置记录，等待管理员配置";
+qDebug() << "首次启动，无串口配置记录，等待管理员配置";
         updateSerialStatus(false);
         return;
     }
@@ -305,12 +305,12 @@ void Widget::tryAutoOpenSerial()
     // 尝试打开串口
     if(m_sharedSerial->open(QIODevice::ReadWrite))
     {
-//        qDebug() << "串口自动打开成功:" << port;
+qDebug() << "串口自动打开成功:" << port;
         updateSerialStatus(true);
     }
     else
     {
-//        qDebug() << "串口自动打开失败:" << port << m_sharedSerial->errorString();
+qDebug() << "串口自动打开失败:" << port << m_sharedSerial->errorString();
         updateSerialStatus(false);
     }
 }
@@ -370,7 +370,7 @@ void Widget::onFaceNoUsers() {
     }
 }
 void Widget::onFaceMatch(const QString &card, const QString &name, float) {
-//    qDebug() << "[人脸] 收到匹配结果:" << name << card;
+qDebug() << "[人脸] 收到匹配结果:" << name << card;
     m_faceStatusLabel->setText(QString("识别成功: %1").arg(name));
     if (!this->isVisible()) return;
 
@@ -451,14 +451,14 @@ void Widget::showEvent(QShowEvent *ev)
 {
     QWidget::showEvent(ev);
     FaceCapture::instance()->start();
-//    qDebug() << "[人脸] 摄像头启动（打卡页显示）";
+qDebug() << "[人脸] 摄像头启动（打卡页显示）";
 }
 
 void Widget::hideEvent(QHideEvent *ev)
 {
     QWidget::hideEvent(ev);
     FaceCapture::instance()->stop();
-//    qDebug() << "[人脸] 摄像头停止（打卡页隐藏）";
+qDebug() << "[人脸] 摄像头停止（打卡页隐藏）";
 }
 
 
