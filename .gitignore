@@ -1,0 +1,30 @@
+# Qt 构建产物
+*.o
+*.obj
+moc_*
+moc_predefs.h
+qrc_*
+ui_*.h
+Makefile
+Makefile.*
+.qmake.stash
+*.pro.user
+*.pro.user*
+debug/
+release/
+build*/
+object_script.*
+
+# 编译输出
+*.a
+*.so
+*.dll
+*.exe
+
+# 数据库运行时文件
+*.db
+*.db-shm
+*.db-wal
+
+# 临时文件
+temptmpyr2_oe
